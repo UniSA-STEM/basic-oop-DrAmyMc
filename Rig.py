@@ -1,11 +1,13 @@
 """
 File: Rig.py
-Description: <A brief description of this Python module.>
+Description: Rig class, representing a hacker's rig (computer), for 'Into the Grid' game.
 Author: Amellia (Amy) McCormack
 ID: 110392134
 Username: MCCAY044
 This is my own work as defined by the University's Academic Misconduct Policy.
 """
+
+from Asset import Asset
 
 class Rig:
     def __init__(self, name):
@@ -13,7 +15,7 @@ class Rig:
         self.__damage_counter = 0
         self.__is_broken = False
         self.__upgrade_level = 0
-        self.__storage = []
+        self.__storage = [Asset('Data Spike'), Asset('Data Spike'), Asset('Removable Drive')]
 
     def __str__(self):
         details = []
@@ -21,9 +23,8 @@ class Rig:
         #TODO: details.append(method for rig condition here)
         details.append(f"Upgrade Level: {self.__upgrade_level}\nStorage Contents:")
         for item in self.__storage:
-            details.append(str(item))
+            details.append("    " + str(item))
         return '\n'.join(details)
 
-# TODO: Needs 2x Data Spikes and 1x Removable Drive
 
 

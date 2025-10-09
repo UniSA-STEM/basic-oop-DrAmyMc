@@ -1,6 +1,6 @@
 """
 File: main.py
-Description: <A brief description of this Python module.>
+Description: Test code for running 'Into the Grid' game, using classes for Hackers, Rigs and Assets.
 Author: Amellia (Amy) McCormack
 ID: 110392134
 Username: MCCAY044
@@ -11,11 +11,11 @@ from Hacker import Hacker
 from Rig import Rig
 from Asset import Asset
 
-asset = Asset('CryptoToken')
-print(asset)
+#asset = Asset('Data Spike')
+#print(asset)
 
 rig = Rig('Mah Computer')
 print(rig)
 
-hacker = Hacker('Neo')
-print(hacker)
+#hacker = Hacker('Neo')
+#print(hacker)
