@@ -17,6 +17,42 @@ class Rig:
         self.__upgrade_level = 0
         self.__storage = [Asset('Data Spike'), Asset('Data Spike'), Asset('Removable Drive')]
 
+    def get_name(self):
+        return self.__name
+
+    def get_damage_counter(self):
+        return self.__damage_counter
+
+    def get_is_broken(self):
+        return self.__is_broken
+
+    def get_upgrade_level(self):
+        return self.__upgrade_level
+
+    def get_storage(self):
+        return self.__storage
+
+    def set_name(self, name):
+        self.__name = name
+
+    def set_damage_counter(self, counter):
+        if counter.isdigit() == True:
+            self.__damage_counter = counter
+
+    def set_is_broken(self, broken):
+        if broken == True or broken == False:
+            self.__is_broken = broken
+
+    def set_upgrade_level(self, level):
+        if level.isdigit() == True:
+            self.__upgrade_level = level
+
+    name = property(get_name, set_name)
+    damage_counter = property(get_damage_counter, set_damage_counter)
+    is_broken = property(get_is_broken, set_is_broken)
+    upgrade_level = property(get_upgrade_level, set_upgrade_level)
+    storage = property(get_storage)
+
     def __str__(self):
         details = []
         details.append(f"Rig's Name: {self.__name}")
