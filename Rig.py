@@ -47,11 +47,31 @@ class Rig:
         if level.isdigit() == True:
             self.__upgrade_level = level
 
+    def add_item(self, item):
+        self.__storage.append(item)
+
+    def remove_item(self, item):
+        if item in self.__storage:
+            self.__storage.remove(item)
+
+    def generate_asset(self):
+        pass
+
+# TODO: Need to scan inventory for item to start with, need to fix inventory scanning before anything else as all dependent on this
+    def repair_rig(self):
+        if self.__damage_counter > 0:
+            self.__damage_counter = 0
+            self.is_broken = False
+            self.remove_item('CryptoToken')
+        else:
+            print("No repair is needed.")
+
     name = property(get_name, set_name)
     damage_counter = property(get_damage_counter, set_damage_counter)
     is_broken = property(get_is_broken, set_is_broken)
     upgrade_level = property(get_upgrade_level, set_upgrade_level)
     storage = property(get_storage)
+
 
     def __str__(self):
         details = []
