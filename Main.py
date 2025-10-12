@@ -63,7 +63,7 @@ def main():
     create_rig()
     create_hacker()
     acquire_rig()
-    generate_asset()
+    #generate_asset()
 
     #print(rig.get_storage())
     # hacker.scan_inventory('CryptoToken')
