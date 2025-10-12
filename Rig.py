@@ -43,7 +43,7 @@ class Rig:
 
     def set_damage_counter(self, counter):
         # Ensures only valid numbers can be passed to damage counter attribute
-        if counter >= 0 and counter <= 10:
+        if counter >= 0 and counter <= 5:
             self.__damage_counter = counter
 
     def set_is_broken(self, broken):
@@ -53,7 +53,7 @@ class Rig:
 
     def set_upgrade_level(self, level):
         # Ensures only valid numbers can be passed to upgrade level attribute
-        if level >= 0 and level <=10:
+        if level >= 0 and level <=3:
             self.__upgrade_level = level
 
     # Properties for each attribute
@@ -100,11 +100,32 @@ class Rig:
             self.set_damage_counter(0)
             self.set_is_broken(False)
             self.remove_asset(required)
+            print(f"Your rig has been repaired and restored to pristine condition.")
 
-    # TODO: Update this with different conditions etc based on game numbers
+    # Upgrades rig using a Hardware Patch from storage
+    def upgrade_rig(self):
+        required = 'Hardware Patch'
+        if self.get_upgrade_level() == 3:
+            print("You cannot upgrade this rig - maximum upgrade level reached.\n")
+        elif self.scan_storage(required) == None :
+            print(f"You cannot perform this upgrade - you need a {required} in your storage.\n")
+        else:
+            self.set_upgrade_level((self.get_upgrade_level() + 1))
+            self.remove_asset(required)
+            print(f"Your rig has been upgraded to level {self.get_upgrade_level()}.\n")
+
+    # Records hit damage from an attack from another hacker
+    def take_hit(self):
+        self.set_damage_counter((self.get_damage_counter() + 1))
+        print(f"You have been hit! Your damage is now {self.get_damage_counter()}.\n")
+        if self.get_damage_counter() >= 2:
+            self.set_is_broken(True)
+            print(f"Your rig is now broken :( Your assets are vulnerable!\n")
+
+# TODO: Update all methods with different conditions based on game numbers - upgrade level, damage counter, storage size
     # Returns condition of rig based on damage and upgrade level
     def show_condition(self):
-        if self.get_upgrade_level() == 0:
+        if self.get_upgrade_level() >= 0:
             if self.get_damage_counter() == 0:
                 return f"Pristine (Level {self.get_upgrade_level()})"
             elif self.get_damage_counter() == 1:
@@ -125,6 +146,3 @@ class Rig:
                 details.append("    " + str(item))
         details.append("")
         return '\n'.join(details)
-
-
-

@@ -61,6 +61,19 @@ class Hacker:
     trace_level = property(get_trace_level, set_trace_level)
     is_exposed = property(get_is_exposed, set_is_exposed)
 
+    # Scans inventory to search for an asset by name
+    def scan_inventory(self, asset_name):
+        item_index = None
+        for item in self.get_inventory():
+            if item.get_name() == asset_name:
+                item_index = self.get_inventory().index(item)
+        return item_index
+
+    # Scans storage on rig to search for an asset by name
+    def scan_storage(self, asset_name):
+        return self.get_rig().scan_storage(asset_name)
+
+    # Acquire a rig in exchange for a CryptoToken
     def acquire_rig(self, name):
         for item in self.__inventory:
             if item.name == 'CryptoToken':
@@ -83,16 +96,6 @@ class Hacker:
                     print("You do not have a data spike in your rig's storage to launch.")
         else:
             print("You cannot launch a data spike while exposed. Reduce your exposure level.")
-
-    def scan_inventory(self, asset):
-        item_index = None
-        for item in self.get_inventory():
-            if item.get_name() == asset:
-                item_index = self.__inventory.index(item)
-        return item_index
-
-    def scan_storage(self, asset):
-        return self.get_rig().scan_storage(asset)
 
     def encrypt_asset(self, asset):
         pass

@@ -88,6 +88,7 @@ def generate_asset():
     rig.generate_asset()
     print(rig)
 
+# Tests repair rig function for rig, including when rig doesn't need repair and when CryptoToken is missing
 def repair_rig():
     rig = Rig('Mah Computer')
     rig.repair_rig()
@@ -101,6 +102,38 @@ def repair_rig():
     rig.repair_rig()
     print(rig)
 
+# Tests upgrade rig function for rig, including when rig is at maximum upgrade level and when Hardware Patch is missing
+def upgrade_rig():
+    rig = Rig('Mah Computer')
+    rig.upgrade_rig()
+    asset = Asset('Hardware Patch')
+    rig.add_asset(asset)
+    rig.set_upgrade_level(3)
+    print(rig)
+    rig.upgrade_rig()
+    rig.set_upgrade_level(0)
+    rig.upgrade_rig()
+    print(rig)
+
+# Tests rig taking a hit and broken state changing to broken when enough damage sustained
+def take_hit():
+    rig = Rig('Mah Computer')
+    rig.take_hit()
+    print(rig)
+    rig.take_hit()
+    print(rig)
+
+# Tests scanning hacker's inventory to locate item that is found and item that is not found#
+def scan_inventory():
+    hacker = Hacker('Neo')
+    print(hacker)
+    hacker.scan_inventory('Data Spike')
+    hacker.scan_inventory('CryptoToken')
+    hacker.acquire_rig('Mah Computer')
+    hacker.scan_storage('Data Spike')
+    hacker.scan_storage('CryptoToken')
+
+
 # Runs testing functions for program
 def main():
     #create_asset()
@@ -112,7 +145,10 @@ def main():
     #add_item_to_storage()
     #remove_item_from_storage()
     #generate_asset()
-    repair_rig()
+    #repair_rig()
+    #upgrade_rig()
+    #take_hit()
+    scan_inventory()
 
     #print(rig.get_storage())
     #hacker.scan_inventory('CryptoToken')
