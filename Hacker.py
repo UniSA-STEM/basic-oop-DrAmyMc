@@ -77,16 +77,15 @@ class Hacker:
         else:
             print("You cannot launch a data spike while exposed. Reduce your exposure level.")
 
-# TODO: Scanning methods aren't working because of retrieving name ARRRRRGHHHH
     def scan_inventory(self, asset):
-        item_index = self.__inventory.index(asset)
-        print(item_index)
+        item_index = None
+        for item in self.get_inventory():
+            if item.get_name() == asset:
+                item_index = self.__inventory.index(item)
+        return item_index
 
     def scan_storage(self, asset):
-        assets = self.__rig.get_storage()
-        print(assets)
-        item_index = assets.index(asset)
-        print(item_index)
+        return self.get_rig().scan_storage(asset)
 
     def encrypt_asset(self, asset):
         pass
@@ -95,16 +94,17 @@ class Hacker:
         pass
 
     def __str__(self):
-        details = []
+        details = [""]
         details.append(f"Hacker's Name: {self.__name}")
         if self.__rig is None:
             details.append(f"This hacker has no rig!")
         else:
-            details.append(f"Rig Name: {self.__rig}")
+            details.append(f"Rig Name: {self.__rig.get_name()}")
+        details.append(f"Trace Level: {self.__trace_level}")
         if self.__inventory == []:
             details.append(f"This hacker has no inventory!")
         else:
-            details.append(f"Trace Level: {self.__trace_level}\nInventory Contents:")
+            details.append(f"Inventory Contents:")
             for item in self.__inventory:
                 details.append("    " + str(item))
         return '\n'.join(details)

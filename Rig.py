@@ -7,6 +7,7 @@ Username: MCCAY044
 This is my own work as defined by the University's Academic Misconduct Policy.
 """
 
+import random
 from Asset import Asset
 
 class Rig:
@@ -55,7 +56,15 @@ class Rig:
             self.__storage.remove(item)
 
     def generate_asset(self):
-        pass
+        asset = Asset(random.choice(Asset.type_list))
+        self.add_item(asset)
+
+    def scan_storage(self, asset):
+        item_index = None
+        for item in self.get_storage():
+            if item.get_name() == asset:
+                item_index = self.__storage.index(item)
+        return item_index
 
 # TODO: Need to scan inventory for item to start with, need to fix inventory scanning before anything else as all dependent on this
     def repair_rig(self):
@@ -74,7 +83,7 @@ class Rig:
 
 
     def __str__(self):
-        details = []
+        details = [""]
         details.append(f"Rig's Name: {self.__name}")
         #TODO: details.append(method for rig condition here)
         details.append(f"Upgrade Level: {self.__upgrade_level}\nStorage Contents:")
