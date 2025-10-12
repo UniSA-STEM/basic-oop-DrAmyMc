@@ -71,15 +71,40 @@ class Hacker:
 
     # Scans storage on rig to search for an asset by name
     def scan_storage(self, asset_name):
-        return self.get_rig().scan_storage(asset_name)
+        # Ensures rig must be present to be scanned
+        if self.get_rig() != None:
+            return self.get_rig().scan_storage(asset_name)
+
+    # Adds an asset to hacker's inventory
+    def add_asset(self, asset):
+        # Ensures only valid assets can be added to inventory
+        if isinstance(asset, Asset) and asset.get_name() != 'Invalid':
+            self.__inventory.append(asset)
+
+    # Removes an asset from hacker's inventory
+    def remove_asset(self, asset_name):
+        if self.scan_inventory(asset_name) != None:
+            del self.__inventory[self.scan_inventory(asset_name)]
+        else:
+            return None
 
     # Acquire a rig in exchange for a CryptoToken
     def acquire_rig(self, name):
-        for item in self.__inventory:
-            if item.name == 'CryptoToken':
-                self.__rig = Rig(name)
-                self.__inventory.remove(item)
-                print(f"Congratulations, {self.__name}! You have activated your rig.\n")
+        required = 'CryptoToken'
+        if self.get_rig() != None:
+            print("You already have a rig!\n")
+        elif self.scan_inventory(required) == None:
+            print(f"You cannot acquire a rig - you need a {required} in your inventory.\n")
+        else:
+            self.set_rig(Rig(name))
+            self.remove_asset(required)
+            print(f"Congratulations, {self.__name}! You have activated your rig.\n")
+
+    def store_asset(self):
+        pass
+
+    def retrieve_asset(self):
+        pass
 
     # TODO: Actual launching of spike needs to be written in, and consumption of spike from inventory
     def launch_spike(self):
@@ -97,8 +122,19 @@ class Hacker:
         else:
             print("You cannot launch a data spike while exposed. Reduce your exposure level.")
 
-    def encrypt_asset(self, asset):
-        pass
+# TODO: THIS IS VERY MUCH IN PROCESS - does security chip need to be in inventory, or in rig storage? Need separate method for
+    #inventoy versus storage, encryption versus decryption???
+    def encrypt_inventory(self, asset):
+        required = 'Security Chip'
+        if self.get_damage_counter() == 0 and self.get_is_broken() == False:
+            print("No repair is needed.\n")
+        elif self.scan_storage(required) == None:
+            print(f"You cannot perform this repair - you need a {required} in your storage.\n")
+        else:
+            self.set_damage_counter(0)
+            self.set_is_broken(False)
+            self.remove_asset(required)
+            print(f"Your rig has been repaired and restored to pristine condition.")
 
     def decrypt_asset(self, asset):
         pass

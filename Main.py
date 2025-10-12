@@ -40,12 +40,17 @@ def create_hacker():
     hacker = Hacker('Neo')
     print(hacker)
 
-# Tests acquisition of rig by hacker in exchange for one CryptoToken
+# Tests acquisition of rig by hacker in exchange for one CryptoToken, and if rig is already present and if missing Cryptoken
 def acquire_rig():
     hacker = Hacker('Neo')
+    hacker.remove_asset('CryptoToken')
     hacker.acquire_rig('Mah Rig')
+    asset = Asset('CryptoToken')
+    hacker.add_asset(asset)
+    hacker.acquire_rig('Mah Rig Take 2')
     print(hacker)
     print(hacker.get_rig())
+    hacker.acquire_rig('New Rig')
 
 # Tests scanning storage on rig to locate item that is found and item that is not found
 def scan_storage():
@@ -123,16 +128,33 @@ def take_hit():
     rig.take_hit()
     print(rig)
 
-# Tests scanning hacker's inventory to locate item that is found and item that is not found#
+# Tests scanning hacker's inventory and storage to locate item that is found and item that is not found#
 def scan_inventory():
     hacker = Hacker('Neo')
     print(hacker)
     hacker.scan_inventory('Data Spike')
     hacker.scan_inventory('CryptoToken')
-    hacker.acquire_rig('Mah Computer')
+    #hacker.acquire_rig('Mah Computer')
     hacker.scan_storage('Data Spike')
     hacker.scan_storage('CryptoToken')
 
+# Tests adding a valid asset, invalid asset, and non-asset to hacker's inventory
+def add_item_to_inventory():
+    hacker = Hacker('Neo')
+    valid_asset = Asset('CryptoToken')
+    invalid_asset = Asset('USB')
+    non_asset = 'harddrive'
+    hacker.add_asset(valid_asset)
+    hacker.add_asset(invalid_asset)
+    hacker.add_asset(non_asset)
+    print(hacker)
+
+# Tests removing an asset from inventory, and attempting to remove an asset that is not in inventory
+def remove_item_from_inventory():
+    hacker = Hacker('Neo')
+    hacker.remove_asset('Data Spike')
+    hacker.remove_asset('CryptoToken')
+    print(hacker)
 
 # Runs testing functions for program
 def main():
@@ -140,7 +162,7 @@ def main():
     #create_incorrect_asset()
     #create_rig()
     #create_hacker()
-    #acquire_rig()
+    acquire_rig()
     #scan_storage()
     #add_item_to_storage()
     #remove_item_from_storage()
@@ -148,7 +170,9 @@ def main():
     #repair_rig()
     #upgrade_rig()
     #take_hit()
-    scan_inventory()
+    #scan_inventory()
+    #add_item_to_inventory()
+    #remove_item_from_inventory()
 
     #print(rig.get_storage())
     #hacker.scan_inventory('CryptoToken')

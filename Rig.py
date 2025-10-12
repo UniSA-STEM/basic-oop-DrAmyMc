@@ -73,7 +73,7 @@ class Rig:
 
     # Adds an asset to storage on rig
     def add_asset(self, asset):
-        # Ensures only valid assets can be added to inventory
+        # Ensures only valid assets can be added to storage
         if isinstance(asset, Asset) and asset.get_name() != 'Invalid':
             self.__storage.append(asset)
 
