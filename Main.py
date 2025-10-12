@@ -47,6 +47,32 @@ def acquire_rig():
     print(hacker)
     print(hacker.get_rig())
 
+# Tests scanning storage on rig to locate item that is found and item that is not found
+def scan_storage():
+    rig = Rig('Mah Computer')
+    print(rig)
+    rig.scan_storage('Data Spike')
+    rig.scan_storage('CryptoToken')
+
+# Tests adding a valid asset, invalid asset, and non-asset to storage on rig
+def add_item_to_storage():
+    rig = Rig('Mah Computer')
+    valid_asset = Asset('CryptoToken')
+    invalid_asset = Asset('USB')
+    non_asset = 'harddrive'
+    rig.add_asset(valid_asset)
+    rig.add_asset(invalid_asset)
+    rig.add_asset(non_asset)
+    print(rig)
+
+# Tests removing an asset from storage, and attempting to remove an asset that is not in storage
+def remove_item_from_storage():
+    rig = Rig('Mah Computer')
+    print(rig)
+    rig.remove_asset('Data Spike')
+    print(rig)
+    rig.remove_asset('CryptoToken')
+
 # Tests random asset generate function for rig (3 initial assets upon create, 10 new random assets)
 def generate_asset():
     rig = Rig('Mah Computer')
@@ -62,18 +88,35 @@ def generate_asset():
     rig.generate_asset()
     print(rig)
 
+def repair_rig():
+    rig = Rig('Mah Computer')
+    rig.repair_rig()
+    rig.set_damage_counter(5)
+    rig.set_is_broken(True)
+    print(rig)
+    rig.repair_rig()
+    asset = Asset('CryptoToken')
+    rig.add_asset(asset)
+    print(rig)
+    rig.repair_rig()
+    print(rig)
+
 # Runs testing functions for program
 def main():
-    create_asset()
-    create_incorrect_asset()
+    #create_asset()
+    #create_incorrect_asset()
     #create_rig()
     #create_hacker()
     #acquire_rig()
+    #scan_storage()
+    #add_item_to_storage()
+    #remove_item_from_storage()
     #generate_asset()
+    repair_rig()
 
     #print(rig.get_storage())
-    # hacker.scan_inventory('CryptoToken')
+    #hacker.scan_inventory('CryptoToken')
     #hacker.launch_spike()
-    #hacker.scan_storage('Data Spike')
+
 
 main()

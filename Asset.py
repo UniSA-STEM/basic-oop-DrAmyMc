@@ -20,8 +20,8 @@ class Asset:
             self.__description = Asset.description_list[Asset.type_list.index(name)]
             self.__is_encrypted = False
         else:
-            self.__name = 'Incorrect asset type'
-            self.__description = 'Please remove this asset'
+            self.__name = 'Invalid'
+            self.__description = 'Please remove'
             self.__is_encrypted = False
 
     # Getter functions for each attribute

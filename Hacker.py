@@ -45,8 +45,8 @@ class Hacker:
         self.__rig = rig
 
     def set_trace_level(self, trace):
-        # Ensures only an integer can be passed to trace level attribute
-        if trace.isdigit():
+        # Ensures only valid numbers can be passed to trace level attribute
+        if trace >= 0 and trace <= 10:
             self.__trace_level = trace
 
     def set_is_exposed(self, exposed):
