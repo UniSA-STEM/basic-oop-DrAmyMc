@@ -25,6 +25,11 @@ def create_asset():
     print(asset4)
     print(asset5)
 
+# Tests creation of an incorrect asset type
+def create_incorrect_asset():
+    asset6 = Asset('USB')
+    print(asset6)
+
 # Tests direction creation of a rig and display of string method
 def create_rig():
     rig = Rig('Mah Computer')
@@ -60,9 +65,10 @@ def generate_asset():
 # Runs testing functions for program
 def main():
     create_asset()
-    create_rig()
-    create_hacker()
-    acquire_rig()
+    create_incorrect_asset()
+    #create_rig()
+    #create_hacker()
+    #acquire_rig()
     #generate_asset()
 
     #print(rig.get_storage())
