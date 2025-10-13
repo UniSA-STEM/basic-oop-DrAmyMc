@@ -156,13 +156,15 @@ def remove_item_from_inventory():
     hacker.remove_asset('CryptoToken')
     print(hacker)
 
+# TODO: Need to write tests for rig for upgrade levels with different amounts of damage and storage
+
 # Runs testing functions for program
 def main():
     #create_asset()
     #create_incorrect_asset()
     #create_rig()
     #create_hacker()
-    acquire_rig()
+    #acquire_rig()
     #scan_storage()
     #add_item_to_storage()
     #remove_item_from_storage()
@@ -173,10 +175,5 @@ def main():
     #scan_inventory()
     #add_item_to_inventory()
     #remove_item_from_inventory()
-
-    #print(rig.get_storage())
-    #hacker.scan_inventory('CryptoToken')
-    #hacker.launch_spike()
-
 
 main()

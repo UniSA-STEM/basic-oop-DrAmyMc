@@ -106,21 +106,43 @@ class Hacker:
     def retrieve_asset(self):
         pass
 
-    # TODO: Actual launching of spike needs to be written in, and consumption of spike from inventory
-    def launch_spike(self):
-        if self.__is_exposed == False:
-            for item in self.__rig.get_storage():
-                # TODO: need to rewrite this so ONE data spike is found and used, this is matching each item and hence NOT WORKING
-                if item.name == 'Data Spike':
-                    print('match!')
-                    self.__rig.remove_item(item)
-                    self.__trace_level += 1
-                    if self.__trace_level == 5:
-                        set.is_exposed(True)
-                else:
-                    print("You do not have a data spike in your rig's storage to launch.")
+    # TODO: Need to link with attacked rig and their exposure status?
+    def launch_attack(self, target_rig):
+        if self.get_is_exposed() == False:
+            required = 'Data Spike'
+            if self.get_rig() == None:
+                print("You cannot launch an attacked - you do not have a rig!\n")
+            elif self.scan_storage(required) == None:
+                print(f"You cannot launch an attack - you need a {required} in your rig's storage.\n")
+            else:
+                self.get_rig().remove_asset(required)
+                self.set_trace_level(self.get_trace_level() + 1)
+                print(f"Congratulations, {self.get_name()}! You have hit the target rig, {target_rig.get_name()}.")
+                print(f"Your trace level is now {self.get_trace_level()}.\n")
+                if self.get_trace_level() == 5:
+                    self.set_is_exposed(True)
+                    print(f"You are now exposed!!! Be careful, and reduce your trace.\n")
         else:
-            print("You cannot launch a data spike while exposed. Reduce your exposure level.")
+            print("You cannot launch a data spike while exposed. Reduce your exposure level.\n")
+
+    # Extract assets when target rig is broken from attack
+    def extract_assets(self, target_rig):
+        if self.get_is_exposed() == False:
+            required = 'Removable Drive'
+            if self.get_rig() == None:
+                print("You cannot extract assets - you do not have a rig!\n")
+            elif self.scan_storage(required) == None:
+                print(f"You cannot extract assets - you need a {required} in your rig's storage.\n")
+            else:
+                # TODO Need to actually get the assets here!!!!!
+                self.get_rig().remove_asset(required)
+                print(f"Congratulations, {self.get_name()}! You have extracted the unsecured assets from the target rig.\n")
+                self.set_trace_level(self.get_trace_level() + 1)
+                if self.get_trace_level() == 5:
+                    self.set_is_exposed(True)
+                    print(f"You are now exposed!!! Be careful, and reduce your trace.\n")
+        else:
+            print("You cannot extract assets while exposed. Reduce your exposure level.\n")
 
 # TODO: THIS IS VERY MUCH IN PROCESS - does security chip need to be in inventory, or in rig storage? Need separate method for
     #inventoy versus storage, encryption versus decryption???
