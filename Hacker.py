@@ -161,20 +161,87 @@ class Hacker:
 
     # TODO: THIS IS VERY MUCH IN PROCESS - does security chip need to be in inventory, or in rig storage? Need separate method for
     # inventoy versus storage, encryption versus decryption???
-    def encrypt_inventory(self, asset):
+    def encrypt_inventory(self, asset_name):
         required = 'Security Chip'
-        if self.damage_counter == 0 and self.is_broken == False:
-            print("No repair is needed.\n")
-        elif self.scan_inventory(required) == None:
-            print(f"You cannot perform this repair - you need a {required} in your storage.\n")
+        if self.scan_inventory(required) == None and self.rig == None:
+            print(f"You cannot perform this encryption - you need a {required} in your inventory or storage.\n")
+        elif self.rig != None and self.rig.scan_storage(required) == None:
+            print(f"You cannot perform this encryption - you need a {required} in your inventory or storage.\n")
         else:
-            self.damage_counter = 0
-            self.is_broken = False
-            self.remove_asset(required)
-            print(f"Your rig has been repaired and restored to pristine condition.")
+            if self.scan_inventory(asset_name) == None and self.rig == None:
+                print(f"You cannot encrypt a {asset_name}, as you do not have one in your inventory or storage.\n")
+            elif self.rig != None and self.rig.scan_storage(asset_name) == None:
+                print (f"You cannot encrypt a {asset_name}, as you do not have one in your inventory or storage.\n")
+            else:
+                in_inventory = False
+                index_inventory = None
+                in_storage = False
+                index_storage = None
+                for item in self.inventory:
+                    if item.name == asset_name and item.is_encrypted == False:
+                        index_inventory = self.inventory.index(item)
+                        in_inventory = True
+                for item in self.rig.storage:
+                    if item.name == asset_name and item.is_encrypted == False:
+                        storage_index = self.rig.storage.index(item)
+                        in_storage = True
+                if in_inventory == False and in_storage == False:
+                    print(f"All of your {asset_name} are already encrypted.")
+                elif in_inventory == True:
+                    self.inventory[index_inventory].is_encrypted = True
+                    if self.scan_inventory(required) != None:
+                        self.remove_asset(required)
+                    else:
+                        self.rig.remove_asset(required)
+                    print(f"Your {asset_name} in inventory has now been encrypted.\n")
+                else:
+                    self.rig.storage[index_storage].is_encrypted = True
+                    if self.scan_inventory(required) != None:
+                        self.remove_asset(required)
+                    else:
+                        self.rig.remove_asset(required)
+                    print(f"Your {asset_name} in storage has now been encrypted.\n")
 
-        def decrypt_asset(self, asset):
-            pass
+    def decrypt_inventory(self, asset_name):
+        required = 'Security Chip'
+        if self.scan_inventory(required) == None and self.rig == None:
+            print(f"You cannot perform this decryption - you need a {required} in your inventory or storage.\n")
+        elif self.rig != None and self.rig.scan_storage(required) == None:
+            print(f"You cannot perform this decryption - you need a {required} in your inventory or storage.\n")
+        else:
+            if self.scan_inventory(asset_name) == None and self.rig == None:
+                print(f"You cannot decrypt a {asset_name}, as you do not have one in your inventory or storage.\n")
+            elif self.rig != None and self.rig.scan_storage(asset_name) == None:
+                print (f"You cannot decrypt a {asset_name}, as you do not have one in your inventory or storage.\n")
+            else:
+                in_inventory = False
+                index_inventory = None
+                in_storage = False
+                index_storage = None
+                for item in self.inventory:
+                    if item.name == asset_name and item.is_encrypted == True:
+                        index_inventory = self.inventory.index(item)
+                        in_inventory = True
+                for item in self.rig.storage:
+                    if item.name == asset_name and item.is_encrypted == True:
+                        storage_index = self.rig.storage.index(item)
+                        in_storage = True
+                if in_inventory == False and in_storage == False:
+                    print(f"All of your {asset_name} are already decrypted.")
+                elif in_inventory == True:
+                    self.inventory[index_inventory].is_encrypted = False
+                    if self.scan_inventory(required) != None:
+                        self.remove_asset(required)
+                    else:
+                        self.rig.remove_asset(required)
+                    print(f"Your {asset_name} in inventory has now been decrypted.\n")
+                else:
+                    self.rig.storage[index_storage].is_encrypted = False
+                    if self.scan_inventory(required) != None:
+                        self.remove_asset(required)
+                    else:
+                        self.rig.remove_asset(required)
+                    print(f"Your {asset_name} in storage has now been decrypted.\n")
 
     # TODO: Need to link with attacked rig and their exposure status?
     def launch_attack(self, target_rig):
