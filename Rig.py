@@ -5,8 +5,7 @@ Author: Amellia (Amy) McCormack
 ID: 110392134
 Username: MCCAY044
 This is my own work as defined by the University's Academic Misconduct Policy.
-"""
-"""
+
 Game parameters:
 Upgrade levels: 0 (start)   1       2       3 (max)
 Damage taken:   1 (start)   0.75    0.5     0.25
@@ -19,6 +18,7 @@ from Asset import Asset
 
 # Creation of Rig class
 class Rig:
+    """ Documentation for Rig class"""
     # The rig is created with a name parameter, storage is initialised with starting assets, and all other attributes are set to initial defaults
     def __init__(self, name):
         self.__name = name
@@ -45,7 +45,8 @@ class Rig:
 
     # Setter functions for each appropriate attribute
     def set_name(self, name):
-        self.__name = name
+        # Ensures name is stored as a string
+        self.__name = str(name)
 
     def set_damage_counter(self, counter):
         # Ensures only valid numbers can be passed to damage counter attribute
@@ -72,24 +73,24 @@ class Rig:
     # Scans storage to search for an asset by name
     def scan_storage(self, asset_name):
         item_index = None
-        for item in self.get_storage():
-            if item.get_name() == asset_name:
-                item_index = self.get_storage().index(item)
+        for item in self.storage:
+            if item.name == asset_name:
+                item_index = self.storage.index(item)
         return item_index
 
     # Adds an asset to storage on rig
     def add_asset(self, asset):
         # Sets maximum storage size variables based on upgrade level
-        if self.get_upgrade_level() == 0:
+        if self.upgrade_level == 0:
             max_storage = 4
-        elif self.get_upgrade_level == 1:
+        elif self.upgrade_level == 1:
             max_storage = 6
-        elif self.get_upgrade_level == 2:
+        elif self.upgrade_level == 2:
             max_storage = 8
         else:
             max_storage = 10
         # Ensures only valid assets can be added to storage and that storage space is available:
-        if isinstance(asset, Asset) and asset.get_name() != 'Invalid' and len(self.get_storage()) < max_storage:
+        if isinstance(asset, Asset) and asset.name != 'Invalid' and len(self.storage) < max_storage:
             self.__storage.append(asset)
 
     # Removes an asset from storage on rig
@@ -104,71 +105,71 @@ class Rig:
         asset = Asset(random.choice(Asset.type_list))
         self.add_asset(asset)
 
-    # Repairs all damage to rig using a CryptoToken from storage
+    # TODO THIS NEEDS BE HACKER INITIATED FROM INVENORY Repairs all damage to rig using a CryptoToken from storage
     def repair_rig(self):
         required = 'CryptoToken'
-        if self.get_damage_counter() == 0 and self.get_is_broken() == False:
+        if self.damage_counter == 0 and self.is_broken == False:
             print("No repair is needed.\n")
         elif self.scan_storage(required) == None :
             print(f"You cannot perform this repair - you need a {required} in your storage.\n")
         else:
-            self.set_damage_counter(0)
-            self.set_is_broken(False)
+            self.damage_counter = 0
+            self.is_broken = False
             self.remove_asset(required)
             print(f"Your rig has been repaired and restored to pristine condition.")
 
-    # Upgrades rig using a Hardware Patch from storage
+    # TODO SAME THING THIS NEEDS TO BE HACKER LED Upgrades rig using a Hardware Patch from storage
     def upgrade_rig(self):
         required = 'Hardware Patch'
-        if self.get_upgrade_level() == 3:
+        if self.upgrade_level == 3:
             print("You cannot upgrade this rig - maximum upgrade level reached.\n")
         elif self.scan_storage(required) == None :
             print(f"You cannot perform this upgrade - you need a {required} in your storage.\n")
         else:
-            self.set_upgrade_level((self.get_upgrade_level() + 1))
+            self.upgrade_level += 1
             self.remove_asset(required)
-            print(f"Your rig has been upgraded to level {self.get_upgrade_level()}.\n")
+            print(f"Your rig has been upgraded to level {self.upgrade_level}.\n")
 
     # Records hit damage from an attack from another hacker
     def take_hit(self):
         # Sets damage amount from hit based on upgrade level
-        if self.get_upgrade_level() == 0:
+        if self.upgrade_level == 0:
             hit_damage = 1
-        elif self.get_upgrade_level == 1:
+        elif self.upgrade_level == 1:
             hit_damage = 0.75
-        elif self.get_upgrade_level == 2:
+        elif self.upgrade_level == 2:
             hit_damage = 0.5
         else:
             hit_damage = 0.25
-        self.set_damage_counter((self.get_damage_counter() + hit_damage))
-        print(f"You have been hit! Your damage is now {self.get_damage_counter()}.\n")
+        self.damage_counter += hit_damage
+        print(f"You have been hit! Your damage is now {self.damage_counter}.\n")
         # Sets broken status if damage counter reaches 2
-        if self.get_damage_counter() >= 2:
-            self.set_is_broken(True)
+        if self.damage_counter >= 2:
+            self.is_broken = True
             print(f"Your rig is now broken :( Your assets are vulnerable!\n")
 
     # Returns condition of rig based on damage count
     def show_condition(self):
-        if self.get_damage_counter() == 0:
-            return f"Pristine condition - damage count {self.get_damage_counter()} out of 2"
-        elif self.get_damage_counter() < 1:
-            return f"Partially damaged - damage count {self.get_damage_counter()} out of 2"
-        elif self.get_damage_counter() < 2:
-            return f"Heavily damaged - damage count {self.get_damage_counter()} out of 2"
+        if self.damage_counter == 0:
+            return f"Pristine condition - damage count {self.damage_counter} out of 2"
+        elif self.damage_counter < 1:
+            return f"Partially damaged - damage count {self.damage_counter} out of 2"
+        elif self.damage_counter < 2:
+            return f"Heavily damaged - damage count {self.damage_counter} out of 2"
         else:
             return f"Broken - maximum damage! This rig's assets are exposed."
 
     # Returns output for rig as per assignment specification
     def __str__(self):
         details = []
-        details.append(f"Rig's Name: {self.get_name()}")
+        details.append(f"Rig's Name: {self.name}")
         details.append(self.show_condition())
-        details.append(f"Upgrade Level: {self.get_upgrade_level()}")
-        if self.get_storage() == []:
+        details.append(f"Upgrade Level: {self.upgrade_level}")
+        if self.storage == []:
             details.append(f"This rig has no stored assets!")
         else:
             details.append(f"Storage Contents:")
-            for item in self.get_storage():
+            for item in self.storage:
                 details.append("    " + str(item))
         details.append("")
         return '\n'.join(details)

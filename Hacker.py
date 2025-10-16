@@ -13,6 +13,7 @@ from Rig import Rig
 
 # Creation of Hacker class
 class Hacker:
+    """ Documentation for Hacker class """
     # The hacker is created with a name parameter, inventory is initialised with starting asset, and all other attributes are set to initial defaults
     def __init__(self, name):
         self.__name = name
@@ -37,16 +38,19 @@ class Hacker:
     def get_is_exposed(self):
         return self.__is_exposed
 
-    # Setter functions for each attribute
+    # Setter functions for each appropraite attribute
     def set_name(self, name):
-        self.__name = name
+        # Ensures name is stored as a string
+        self.__name = str(name)
 
     def set_rig(self, rig):
-        self.__rig = rig
+        # Ensures only an object of Rig class can be assigned as the hacker's rig
+        if isinstance(rig, Rig):
+            self.__rig = rig
 
     def set_trace_level(self, trace):
         # Ensures only valid numbers can be passed to trace level attribute
-        if trace >= 0 and trace <= 10:
+        if trace >= 0 and trace <= 5:
             self.__trace_level = trace
 
     def set_is_exposed(self, exposed):
@@ -64,21 +68,21 @@ class Hacker:
     # Scans inventory to search for an asset by name
     def scan_inventory(self, asset_name):
         item_index = None
-        for item in self.get_inventory():
-            if item.get_name() == asset_name:
-                item_index = self.get_inventory().index(item)
+        for item in self.inventory:
+            if item.name == asset_name:
+                item_index = self.inventory.index(item)
         return item_index
 
     # Scans storage on rig to search for an asset by name
     def scan_storage(self, asset_name):
         # Ensures rig must be present to be scanned
-        if self.get_rig() != None:
-            return self.get_rig().scan_storage(asset_name)
+        if self.rig != None:
+            return self.rig.scan_storage(asset_name)
 
     # Adds an asset to hacker's inventory
     def add_asset(self, asset):
         # Ensures only valid assets can be added to inventory
-        if isinstance(asset, Asset) and asset.get_name() != 'Invalid':
+        if isinstance(asset, Asset) and asset.name != 'Invalid':
             self.__inventory.append(asset)
 
     # Removes an asset from hacker's inventory
@@ -91,14 +95,14 @@ class Hacker:
     # Acquire a rig in exchange for a CryptoToken
     def acquire_rig(self, name):
         required = 'CryptoToken'
-        if self.get_rig() != None:
+        if self.rig != None:
             print("You already have a rig!\n")
         elif self.scan_inventory(required) == None:
             print(f"You cannot acquire a rig - you need a {required} in your inventory.\n")
         else:
-            self.set_rig(Rig(name))
+            self.rig = Rig(name)
             self.remove_asset(required)
-            print(f"Congratulations, {self.__name}! You have activated your rig.\n")
+            print(f"Congratulations, {self.name}! You have activated your rig.\n")
 
     def store_asset(self):
         pass
@@ -108,38 +112,38 @@ class Hacker:
 
     # TODO: Need to link with attacked rig and their exposure status?
     def launch_attack(self, target_rig):
-        if self.get_is_exposed() == False:
+        if self.is_exposed == False:
             required = 'Data Spike'
-            if self.get_rig() == None:
+            if self.rig == None:
                 print("You cannot launch an attacked - you do not have a rig!\n")
             elif self.scan_storage(required) == None:
                 print(f"You cannot launch an attack - you need a {required} in your rig's storage.\n")
             else:
-                self.get_rig().remove_asset(required)
-                self.set_trace_level(self.get_trace_level() + 1)
-                print(f"Congratulations, {self.get_name()}! You have hit the target rig, {target_rig.get_name()}.")
-                print(f"Your trace level is now {self.get_trace_level()}.\n")
-                if self.get_trace_level() == 5:
-                    self.set_is_exposed(True)
+                self.rig.remove_asset(required)
+                self.trace_level += 1
+                print(f"Congratulations, {self.name}! You have hit the target rig, {target_rig.name}.")
+                print(f"Your trace level is now {self.trace_level}.\n")
+                if self.trace_level == 5:
+                    self.is_exposed = True
                     print(f"You are now exposed!!! Be careful, and reduce your trace.\n")
         else:
             print("You cannot launch a data spike while exposed. Reduce your exposure level.\n")
 
     # Extract assets when target rig is broken from attack
     def extract_assets(self, target_rig):
-        if self.get_is_exposed() == False:
+        if self.is_exposed == False:
             required = 'Removable Drive'
-            if self.get_rig() == None:
+            if self.rig == None:
                 print("You cannot extract assets - you do not have a rig!\n")
             elif self.scan_storage(required) == None:
                 print(f"You cannot extract assets - you need a {required} in your rig's storage.\n")
             else:
                 # TODO Need to actually get the assets here!!!!!
-                self.get_rig().remove_asset(required)
-                print(f"Congratulations, {self.get_name()}! You have extracted the unsecured assets from the target rig.\n")
-                self.set_trace_level(self.get_trace_level() + 1)
-                if self.get_trace_level() == 5:
-                    self.set_is_exposed(True)
+                self.rig.remove_asset(required)
+                print(f"Congratulations, {self.name}! You have extracted the unsecured assets from the target rig.\n")
+                self.trace_level += 1
+                if self.trace_level == 5:
+                    self.is_exposed = True
                     print(f"You are now exposed!!! Be careful, and reduce your trace.\n")
         else:
             print("You cannot extract assets while exposed. Reduce your exposure level.\n")
@@ -148,13 +152,13 @@ class Hacker:
     #inventoy versus storage, encryption versus decryption???
     def encrypt_inventory(self, asset):
         required = 'Security Chip'
-        if self.get_damage_counter() == 0 and self.get_is_broken() == False:
+        if self.damage_counter == 0 and self.is_broken == False:
             print("No repair is needed.\n")
         elif self.scan_storage(required) == None:
             print(f"You cannot perform this repair - you need a {required} in your storage.\n")
         else:
-            self.set_damage_counter(0)
-            self.set_is_broken(False)
+            self.damage_counter = 0
+            self.is_broken = False
             self.remove_asset(required)
             print(f"Your rig has been repaired and restored to pristine condition.")
 
@@ -164,20 +168,17 @@ class Hacker:
     # Returns output for hacker as per assignment specification
     def __str__(self):
         details = []
-        details.append(f"Hacker's Name: {self.get_name()}")
-        if self.__rig is None:
+        details.append(f"Hacker's Name: {self.name}")
+        if self.rig is None:
             details.append(f"This hacker has no rig!")
         else:
-            details.append(f"Rig Name: {self.get_rig().get_name()}")
-        details.append(f"Trace Level: {self.get_trace_level()}")
-        if self.get_inventory() == []:
+            details.append(f"Rig Name: {self.rig.name}")
+        details.append(f"Trace Level: {self.trace_level}")
+        if self.inventory == []:
             details.append(f"This hacker has no inventory!")
         else:
             details.append(f"Inventory Contents:")
-            for item in self.get_inventory():
+            for item in self.inventory:
                 details.append("    " + str(item))
         details.append("")
         return '\n'.join(details)
-
-
-

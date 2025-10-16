@@ -19,6 +19,7 @@ def create_asset():
     asset3 = Asset('Removable Drive')
     asset4 = Asset('Security Chip')
     asset5 = Asset('Hardware Patch')
+    asset5.is_encrypted = True
     print(asset1)
     print(asset2)
     print(asset3)
@@ -160,11 +161,11 @@ def remove_item_from_inventory():
 
 # Runs testing functions for program
 def main():
-    #create_asset()
+    create_asset()
     #create_incorrect_asset()
     #create_rig()
-    #create_hacker()
-    #acquire_rig()
+    create_hacker()
+    acquire_rig()
     #scan_storage()
     #add_item_to_storage()
     #remove_item_from_storage()
