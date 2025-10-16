@@ -105,31 +105,6 @@ class Rig:
         asset = Asset(random.choice(Asset.type_list))
         self.add_asset(asset)
 
-    # TODO THIS NEEDS BE HACKER INITIATED FROM INVENORY Repairs all damage to rig using a CryptoToken from storage
-    def repair_rig(self):
-        required = 'CryptoToken'
-        if self.damage_counter == 0 and self.is_broken == False:
-            print("No repair is needed.\n")
-        elif self.scan_storage(required) == None :
-            print(f"You cannot perform this repair - you need a {required} in your storage.\n")
-        else:
-            self.damage_counter = 0
-            self.is_broken = False
-            self.remove_asset(required)
-            print(f"Your rig has been repaired and restored to pristine condition.")
-
-    # TODO SAME THING THIS NEEDS TO BE HACKER LED Upgrades rig using a Hardware Patch from storage
-    def upgrade_rig(self):
-        required = 'Hardware Patch'
-        if self.upgrade_level == 3:
-            print("You cannot upgrade this rig - maximum upgrade level reached.\n")
-        elif self.scan_storage(required) == None :
-            print(f"You cannot perform this upgrade - you need a {required} in your storage.\n")
-        else:
-            self.upgrade_level += 1
-            self.remove_asset(required)
-            print(f"Your rig has been upgraded to level {self.upgrade_level}.\n")
-
     # Records hit damage from an attack from another hacker
     def take_hit(self):
         # Sets damage amount from hit based on upgrade level

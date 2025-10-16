@@ -73,12 +73,6 @@ class Hacker:
                 item_index = self.inventory.index(item)
         return item_index
 
-    # Scans storage on rig to search for an asset by name
-    def scan_storage(self, asset_name):
-        # Ensures rig must be present to be scanned
-        if self.rig != None:
-            return self.rig.scan_storage(asset_name)
-
     # Adds an asset to hacker's inventory
     def add_asset(self, asset):
         # Ensures only valid assets can be added to inventory
@@ -104,11 +98,83 @@ class Hacker:
             self.remove_asset(required)
             print(f"Congratulations, {self.name}! You have activated your rig.\n")
 
-    def store_asset(self):
-        pass
+    # Repairs all damage to rig using a CryptoToken from inventory
+    def repair_rig(self):
+        required = 'CryptoToken'
+        if self.rig == None:
+            print(f"You do not have a rig!\n")
+        else:
+            if self.rig.damage_counter == 0 and self.rig.is_broken == False:
+                print("No repair is needed. Your rig is not damaged.\n")
+            elif self.scan_inventory(required) == None :
+                print(f"You cannot perform this repair - you need a {required} in your inventory.\n")
+            else:
+                self.rig.damage_counter = 0
+                self.rig.is_broken = False
+                self.remove_asset(required)
+                print(f"Your rig has been repaired and restored to pristine condition.")
 
-    def retrieve_asset(self):
-        pass
+    # Upgrades rig using a Hardware Patch from inventory
+    def upgrade_rig(self):
+        required = 'Hardware Patch'
+        if self.rig == None:
+            print(f"You do not have a rig!\n")
+        else:
+            if self.rig.upgrade_level == 3:
+                print("You cannot upgrade this rig - maximum upgrade level reached.\n")
+            elif self.scan_inventory(required) == None :
+                print(f"You cannot perform this upgrade - you need a {required} in your inventory.\n")
+            else:
+                self.rig.upgrade_level += 1
+                self.remove_asset(required)
+                print(f"Your rig has been upgraded to level {self.rig.upgrade_level}.\n")
+
+    # Moves 'all' or specific asset FROM hacker's inventory TO rig's storage
+    def store_asset(self, asset_name):
+        if asset_name == 'all':
+            for item in self.inventory:
+                if item.is_encrypted == False:
+                    self.rig.add_asset(item)
+                    self.remove_asset(item.name)
+        else:
+            # TODO This bit needs encryption filter as well
+            if self.scan_inventory(asset_name) != None:
+                del self.inventory[self.scan_inventory(asset_name)]
+                self.rig.add_asset(Asset('asset_name'))
+            else:
+                return None
+
+    # Moves 'all' or specific asset FROM rig's storage TO hacker's inventory
+    def retrieve_asset(self, asset_name):
+        if asset_name == 'all':
+            for item in self.rig.storage:
+                if item.is_encrypted == False:
+                    self.add_asset(item)
+                    self.rig.remove_asset(item.name)
+        else:
+            # TODO This bit needs encryption filter as well
+            if self.rig.scan_storage(asset_name) != None:
+                del self.rig.storage[self.rig.scan_storage(asset_name)]
+                self.add_asset(Asset('asset_name'))
+            else:
+                return None
+
+    # TODO: THIS IS VERY MUCH IN PROCESS - does security chip need to be in inventory, or in rig storage? Need separate method for
+    # inventoy versus storage, encryption versus decryption???
+    def encrypt_inventory(self, asset):
+        required = 'Security Chip'
+        if self.damage_counter == 0 and self.is_broken == False:
+            print("No repair is needed.\n")
+        elif self.scan_inventory(required) == None:
+            print(f"You cannot perform this repair - you need a {required} in your storage.\n")
+        else:
+            self.damage_counter = 0
+            self.is_broken = False
+            self.remove_asset(required)
+            print(f"Your rig has been repaired and restored to pristine condition.")
+
+        def decrypt_asset(self, asset):
+            pass
 
     # TODO: Need to link with attacked rig and their exposure status?
     def launch_attack(self, target_rig):
@@ -116,7 +182,7 @@ class Hacker:
             required = 'Data Spike'
             if self.rig == None:
                 print("You cannot launch an attacked - you do not have a rig!\n")
-            elif self.scan_storage(required) == None:
+            elif self.rig.scan_storage(required) == None:
                 print(f"You cannot launch an attack - you need a {required} in your rig's storage.\n")
             else:
                 self.rig.remove_asset(required)
@@ -135,7 +201,7 @@ class Hacker:
             required = 'Removable Drive'
             if self.rig == None:
                 print("You cannot extract assets - you do not have a rig!\n")
-            elif self.scan_storage(required) == None:
+            elif self.rig.scan_storage(required) == None:
                 print(f"You cannot extract assets - you need a {required} in your rig's storage.\n")
             else:
                 # TODO Need to actually get the assets here!!!!!
@@ -147,23 +213,6 @@ class Hacker:
                     print(f"You are now exposed!!! Be careful, and reduce your trace.\n")
         else:
             print("You cannot extract assets while exposed. Reduce your exposure level.\n")
-
-# TODO: THIS IS VERY MUCH IN PROCESS - does security chip need to be in inventory, or in rig storage? Need separate method for
-    #inventoy versus storage, encryption versus decryption???
-    def encrypt_inventory(self, asset):
-        required = 'Security Chip'
-        if self.damage_counter == 0 and self.is_broken == False:
-            print("No repair is needed.\n")
-        elif self.scan_storage(required) == None:
-            print(f"You cannot perform this repair - you need a {required} in your storage.\n")
-        else:
-            self.damage_counter = 0
-            self.is_broken = False
-            self.remove_asset(required)
-            print(f"Your rig has been repaired and restored to pristine condition.")
-
-    def decrypt_asset(self, asset):
-        pass
 
     # Returns output for hacker as per assignment specification
     def __str__(self):
