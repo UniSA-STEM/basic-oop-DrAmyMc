@@ -289,6 +289,74 @@ def decrypt_asset():
     hacker.decrypt_asset('CryptoToken')
     hacker.decrypt_asset('Data Spike')
 
+def store_asset():
+    hacker = Hacker('Neo')
+    hacker.acquire_rig('My Computer')
+    hacker.add_asset(Asset('CryptoToken'))
+    hacker.add_asset(Asset('CryptoToken'))
+    hacker.add_asset(Asset('CryptoToken'))
+    asset = Asset('Data Spike')
+    asset.is_encrypted = True
+    asset2 = Asset('Data Spike')
+    asset2.is_encrypted = True
+    hacker.add_asset(asset)
+    hacker.add_asset(asset2)
+    print(hacker)
+    print(hacker.rig)
+    hacker.store_asset('all')
+    print(hacker)
+    print(hacker.rig)
+    hacker.rig.upgrade_level = 3
+    hacker.store_asset('all')
+    print(hacker)
+    print(hacker.rig)
+
+def retrieve_asset():
+    hacker = Hacker('Neo')
+    hacker.acquire_rig('My Computer')
+    hacker.rig.upgrade_level = 3
+    asset = Asset('CryptoToken')
+    asset.is_encrypted = True
+    asset2 = Asset('CryptoToken')
+    asset2.is_encrypted = True
+    hacker.rig.add_asset(asset)
+    hacker.rig.add_asset(asset2)
+    print(hacker)
+    print(hacker.rig)
+    hacker.retrieve_asset('all')
+    print(hacker)
+    print(hacker.rig)
+
+def launch_attack():
+    hacker1 = Hacker('Neo')
+    hacker2 = Hacker('Bad Guy')
+    hacker1.acquire_rig('Neo Rig')
+    hacker2.acquire_rig('BadGuy Rig')
+    hacker1.launch_attack(hacker2.rig)
+    hacker1.launch_attack(hacker2.rig)
+    # Test an attack without a data spike
+    hacker1.launch_attack(hacker2.rig)
+    # Extract assets from broken rig
+    hacker1.extract_assets(hacker2.rig)
+    print(hacker1)
+    print(hacker1.rig)
+    print(hacker2)
+    print(hacker2.rig)
+
+def extract_assets():
+    pass
+
+# Tests reduce trace function
+def reduce_trace():
+    # Tests successful reduction of trace level
+    hacker = Hacker('Neo')
+    hacker.trace_level = 3
+    hacker.reduce_trace()
+    hacker.reduce_trace()
+    hacker.reduce_trace()
+    # Tests attempt to reduce trace level below 0
+    hacker.reduce_trace()
+
 # Runs testing functions for program
 def main():
     #create_asset()
@@ -307,12 +375,12 @@ def main():
     #upgrade_rig()
 
     #encrypt_asset()
-    decrypt_asset()
+    #decrypt_asset()
     #store_asset()
     #retrieve_asset()
 
-    #launch_attack()
+    launch_attack()
     #extract_assets()
-
+    #reduce_trace()
 
 main()

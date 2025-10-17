@@ -125,7 +125,7 @@ class Rig:
         # Sets broken status if damage counter reaches 2
         if self.damage_counter >= 2:
             self.is_broken = True
-            print(f"{self.name}, your rig is now broken :( Your assets are vulnerable!\n")
+            print(f"{self.name} is now broken :( The assets are vulnerable!\n")
 
     # Returns condition of rig based on damage count
     def show_condition(self):

@@ -129,36 +129,6 @@ class Hacker:
                 self.remove_asset(required)
                 print(f"Your rig has been upgraded to level {self.rig.upgrade_level}.\n")
 
-    # Moves 'all' or specific asset FROM hacker's inventory TO rig's storage
-    def store_asset(self, asset_name):
-        if asset_name == 'all':
-            for item in self.inventory:
-                if item.is_encrypted == False:
-                    self.rig.add_asset(item)
-                    self.remove_asset(item.name)
-        else:
-            # TODO This bit needs encryption filter as well
-            if self.scan_inventory(asset_name) != None:
-                del self.inventory[self.scan_inventory(asset_name)]
-                self.rig.add_asset(Asset('asset_name'))
-            else:
-                return None
-
-    # Moves 'all' or specific asset FROM rig's storage TO hacker's inventory
-    def retrieve_asset(self, asset_name):
-        if asset_name == 'all':
-            for item in self.rig.storage:
-                if item.is_encrypted == False:
-                    self.add_asset(item)
-                    self.rig.remove_asset(item.name)
-        else:
-            # TODO This bit needs encryption filter as well
-            if self.rig.scan_storage(asset_name) != None:
-                del self.rig.storage[self.rig.scan_storage(asset_name)]
-                self.add_asset(Asset('asset_name'))
-            else:
-                return None
-
     # Encrypt an asset from inventory or storage
     def encrypt_asset(self, asset_name):
         required = 'Security Chip'
@@ -243,6 +213,37 @@ class Hacker:
                         self.rig.remove_asset(required)
                     print(f"Your {asset_name} in storage has now been decrypted.\n")
 
+    # Moves 'all' or specific asset FROM hacker's inventory TO rig's storage
+    def store_asset(self, asset_name):
+        if asset_name == 'all':
+            for item in self.inventory:
+                if item.is_encrypted == False:
+                    self.rig.add_asset(item)
+                    self.remove_asset(item.name)
+        else:
+            # TODO This bit needs encryption filter as well
+            if self.scan_inventory(asset_name) != None:
+                del self.inventory[self.scan_inventory(asset_name)]
+                self.rig.add_asset(Asset('asset_name'))
+            else:
+                return None
+
+    # Moves 'all' or specific asset FROM rig's storage TO hacker's inventory
+    def retrieve_asset(self, asset_name):
+        # THIS IS NOT CYCLING RIGHT
+        if asset_name == 'all':
+            for item in self.rig.storage:
+                if item.is_encrypted == False:
+                    self.add_asset(item)
+                    self.rig.remove_asset(item.name)
+        else:
+            # TODO This bit needs encryption filter as well
+            if self.rig.scan_storage(asset_name) != None:
+                del self.rig.storage[self.rig.scan_storage(asset_name)]
+                self.add_asset(Asset('asset_name'))
+            else:
+                return None
+
     # Launch attack at opponent's rig
     def launch_attack(self, target_rig):
         if self.is_exposed == False:
@@ -254,8 +255,8 @@ class Hacker:
             else:
                 self.rig.remove_asset(required)
                 self.trace_level += 1
-                print(f"Congratulations, {self.name}! You have hit the target rig, {target_rig.name}.")
-                print(f"Your trace level is now {self.trace_level}.\n")
+                print(f"Congratulations, {self.name}! You have hit the target rig, {target_rig.name}. Your trace level"
+                      f" is now {self.trace_level}.\n")
                 if self.trace_level == 5:
                     self.is_exposed = True
                     print(f"You are now exposed!!! Be careful, and reduce your trace.\n")
@@ -274,6 +275,7 @@ class Hacker:
             elif target_rig.is_broken == False:
                 print(f"You cannot extract assets from this rig - it is not broken!\n")
             else:
+                # Still need to fix these loops for duplicate items!!!!!!
                 for item in target_rig.storage:
                     if item.is_encrypted == False:
                         self.add_asset(item)
@@ -293,6 +295,7 @@ class Hacker:
             print (f"You have laid low and reduced your trace. Your trace level is now {self.trace_level}.\n")
         else:
             print("Your trace level is already 0, you cannot reduce your trace further.\n")
+
     # Returns output for hacker as per assignment specification
     def __str__(self):
         details = []
