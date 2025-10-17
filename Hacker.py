@@ -112,7 +112,7 @@ class Hacker:
                 self.rig.damage_counter = 0
                 self.rig.is_broken = False
                 self.remove_asset(required)
-                print(f"Your rig has been repaired and restored to pristine condition.")
+                print(f"Your rig has been repaired and restored to pristine condition.\n")
 
     # Upgrades rig using a Hardware Patch from inventory
     def upgrade_rig(self):
@@ -159,18 +159,18 @@ class Hacker:
             else:
                 return None
 
-    # TODO: TEST THIS WHOLE ENCRYPT/DECRYPT AND CONDENSE THE CODE DOWN
-    def encrypt_inventory(self, asset_name):
+    # Encrypt an asset from inventory or storage
+    def encrypt_asset(self, asset_name):
         required = 'Security Chip'
-        if self.scan_inventory(required) == None and self.rig == None:
-            print(f"You cannot perform this encryption - you need a {required} in your inventory or storage.\n")
-        elif self.rig != None and self.rig.scan_storage(required) == None:
+        if self.rig == None and self.scan_inventory(required) == None:
+            print(f"You cannot perform this encryption - you need a {required} in your inventory.\n")
+        elif self.rig != None and self.scan_inventory(required) == None and self.rig.scan_storage(required) == None:
             print(f"You cannot perform this encryption - you need a {required} in your inventory or storage.\n")
         else:
-            if self.scan_inventory(asset_name) == None and self.rig == None:
-                print(f"You cannot encrypt a {asset_name}, as you do not have one in your inventory or storage.\n")
-            elif self.rig != None and self.rig.scan_storage(asset_name) == None:
-                print (f"You cannot encrypt a {asset_name}, as you do not have one in your inventory or storage.\n")
+            if self.rig == None and self.scan_inventory(asset_name) == None:
+                 print(f"You cannot encrypt a {asset_name}, as you do not have one in your inventory.\n")
+            elif self.rig != None and self.scan_inventory(asset_name) == None and self.rig.scan_storage(asset_name) == None:
+                 print (f"You cannot encrypt a {asset_name}, as you do not have one in your inventory or storage.\n")
             else:
                 in_inventory = False
                 index_inventory = None
@@ -182,10 +182,10 @@ class Hacker:
                         in_inventory = True
                 for item in self.rig.storage:
                     if item.name == asset_name and item.is_encrypted == False:
-                        storage_index = self.rig.storage.index(item)
+                        index_storage = self.rig.storage.index(item)
                         in_storage = True
                 if in_inventory == False and in_storage == False:
-                    print(f"All of your {asset_name} are already encrypted.")
+                    print(f"All of your {asset_name}s are already encrypted.\n")
                 elif in_inventory == True:
                     self.inventory[index_inventory].is_encrypted = True
                     if self.scan_inventory(required) != None:
@@ -193,7 +193,7 @@ class Hacker:
                     else:
                         self.rig.remove_asset(required)
                     print(f"Your {asset_name} in inventory has now been encrypted.\n")
-                else:
+                elif in_inventory == False and in_storage == True:
                     self.rig.storage[index_storage].is_encrypted = True
                     if self.scan_inventory(required) != None:
                         self.remove_asset(required)
@@ -201,17 +201,18 @@ class Hacker:
                         self.rig.remove_asset(required)
                     print(f"Your {asset_name} in storage has now been encrypted.\n")
 
-    def decrypt_inventory(self, asset_name):
+    def decrypt_asset(self, asset_name):
         required = 'Security Chip'
-        if self.scan_inventory(required) == None and self.rig == None:
-            print(f"You cannot perform this decryption - you need a {required} in your inventory or storage.\n")
-        elif self.rig != None and self.rig.scan_storage(required) == None:
+        if self.rig == None and self.scan_inventory(required) == None:
+            print(f"You cannot perform this decryption - you need a {required} in your inventory.\n")
+        elif self.rig != None and self.scan_inventory(required) == None and self.rig.scan_storage(required) == None:
             print(f"You cannot perform this decryption - you need a {required} in your inventory or storage.\n")
         else:
-            if self.scan_inventory(asset_name) == None and self.rig == None:
+            if self.rig == None and self.scan_inventory(asset_name) == None:
+                print(f"You cannot decrypt a {asset_name}, as you do not have one in your inventory.\n")
+            elif self.rig != None and self.scan_inventory(asset_name) == None and self.rig.scan_storage(
+                    asset_name) == None:
                 print(f"You cannot decrypt a {asset_name}, as you do not have one in your inventory or storage.\n")
-            elif self.rig != None and self.rig.scan_storage(asset_name) == None:
-                print (f"You cannot decrypt a {asset_name}, as you do not have one in your inventory or storage.\n")
             else:
                 in_inventory = False
                 index_inventory = None
@@ -223,10 +224,10 @@ class Hacker:
                         in_inventory = True
                 for item in self.rig.storage:
                     if item.name == asset_name and item.is_encrypted == True:
-                        storage_index = self.rig.storage.index(item)
+                        index_storage = self.rig.storage.index(item)
                         in_storage = True
                 if in_inventory == False and in_storage == False:
-                    print(f"All of your {asset_name} are already decrypted.")
+                    print(f"All of your {asset_name}s are already decrypted.\n")
                 elif in_inventory == True:
                     self.inventory[index_inventory].is_encrypted = False
                     if self.scan_inventory(required) != None:
@@ -234,7 +235,7 @@ class Hacker:
                     else:
                         self.rig.remove_asset(required)
                     print(f"Your {asset_name} in inventory has now been decrypted.\n")
-                else:
+                elif in_inventory == False and in_storage == True:
                     self.rig.storage[index_storage].is_encrypted = False
                     if self.scan_inventory(required) != None:
                         self.remove_asset(required)

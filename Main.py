@@ -157,47 +157,137 @@ def add_item_to_inventory():
 def remove_item_from_inventory():
     hacker = Hacker('Neo')
     hacker.remove_asset('Data Spike')
+    hacker.remove_asset('USB')
     hacker.remove_asset('CryptoToken')
     print(hacker)
 
-# Tests acquisition of rig by hacker in exchange for one CryptoToken, and if rig is already present and if missing Cryptoken
+# Tests rig acquisition function for Hacker (exceptions and successful)
 def acquire_rig():
+    # Tests acquisition without CryptoToken available
     hacker = Hacker('Neo')
     hacker.remove_asset('CryptoToken')
     hacker.acquire_rig('Mah Rig')
-    asset = Asset('CryptoToken')
-    hacker.add_asset(asset)
+    # Tests successful acquisition of rig
+    hacker.add_asset(Asset('CryptoToken'))
     hacker.acquire_rig('Mah Rig Take 2')
     print(hacker)
-    print(hacker.get_rig())
+    print(hacker.rig)
+    # Tests acquisition when a rig is already present
     hacker.acquire_rig('New Rig')
 
-# Tests repair rig function for rig, including when rig doesn't need repair and when CryptoToken is missing
+# Tests repair rig function for Hacker (exceptions and successful)
 def repair_rig():
-    rig = Rig('Mah Computer')
-    rig.repair_rig()
-    rig.set_damage_counter(5)
-    rig.set_is_broken(True)
-    print(rig)
-    rig.repair_rig()
-    asset = Asset('CryptoToken')
-    rig.add_asset(asset)
-    print(rig)
-    rig.repair_rig()
-    print(rig)
+    # Tests repair without a rig
+    hacker = Hacker('Neo')
+    hacker.repair_rig()
+    # Tests repair when rig is not damaged
+    hacker.acquire_rig('Mah Rig')
+    hacker.repair_rig()
+    # Tests repair without CryptoToken available
+    hacker.rig.damage_counter = 1
+    hacker.repair_rig()
+    # Tests successful repair of rig
+    hacker.add_asset(Asset('CryptoToken'))
+    hacker.repair_rig()
+    print(hacker.rig)
 
-# Tests upgrade rig function for rig, including when rig is at maximum upgrade level and when Hardware Patch is missing
+# Tests upgrade rig function for Hacker (exceptions and successful)
 def upgrade_rig():
-    rig = Rig('Mah Computer')
-    rig.upgrade_rig()
-    asset = Asset('Hardware Patch')
-    rig.add_asset(asset)
-    rig.set_upgrade_level(3)
-    print(rig)
-    rig.upgrade_rig()
-    rig.set_upgrade_level(0)
-    rig.upgrade_rig()
-    print(rig)
+    # Tests upgrade without a rig
+    hacker = Hacker('Neo')
+    hacker.upgrade_rig()
+    # Tests upgrade without Hardware Patch
+    hacker.acquire_rig('Mah Computer')
+    hacker.upgrade_rig()
+    # Tests upgrade when rig is already at maximum upgrade level
+    hacker.add_asset(Asset('Hardware Patch'))
+    hacker.rig.upgrade_level = 3
+    hacker.upgrade_rig()
+    # Tests successful upgrade of rig
+    hacker.rig.upgrade_level = 0
+    hacker.upgrade_rig()
+    print(hacker.rig)
+
+# Tests encrypt asset function for Hacker (exceptions and successful)
+def encrypt_asset():
+    # Tests encryption without Security Chip in inventory
+    hacker = Hacker('Neo')
+    hacker.encrypt_asset('CryptoToken')
+    # Tests encryption without Security Chip in storage or inventory
+    hacker.acquire_rig('My Computer')
+    hacker.encrypt_asset('CryptoToken')
+    # Tests encryption of asset type not present in inventory or storage
+    hacker.add_asset(Asset('Security Chip'))
+    hacker.encrypt_asset('CryptoToken')
+    # Tests successful encryption of asset in inventory with Security Chip in inventory
+    hacker.add_asset(Asset('CryptoToken'))
+    hacker.encrypt_asset('CryptoToken')
+    print(hacker)
+    # Tests successful encryption of asset in inventory with Security Chip in storage
+    hacker.add_asset(Asset('CryptoToken'))
+    hacker.rig.add_asset(Asset('Security Chip'))
+    hacker.encrypt_asset('CryptoToken')
+    print(hacker)
+    # Tests successful encryption of asset in storage with Security Chip in inventory
+    hacker.add_asset(Asset('Security Chip'))
+    hacker.encrypt_asset('Data Spike')
+    print(hacker.rig)
+    # Tests successful encryption of asset in storage with Security Chip in storage
+    hacker.rig.add_asset(Asset('Security Chip'))
+    hacker.encrypt_asset('Data Spike')
+    print(hacker.rig)
+    # Tests encryption of asset when already encrypted
+    hacker.add_asset(Asset('Security Chip'))
+    hacker.encrypt_asset('CryptoToken')
+    hacker.encrypt_asset('Data Spike')
+
+# Tests decrypt asset function for Hacker (exceptions and successful)
+def decrypt_asset():
+    # Tests decryption without Security Chip in inventory
+    hacker = Hacker('Neo')
+    hacker.decrypt_asset('CryptoToken')
+    # Tests decryption without Security Chip in storage or inventory
+    hacker.acquire_rig('My Computer')
+    hacker.rig.upgrade_level = 3
+    hacker.decrypt_asset('CryptoToken')
+    # Tests decryption of asset type not present in inventory or storage
+    hacker.add_asset(Asset('Security Chip'))
+    hacker.decrypt_asset('CryptoToken')
+    # Tests successful decryption of asset in inventory with Security Chip in inventory
+    asset = Asset('CryptoToken')
+    asset.is_encrypted = True
+    hacker.add_asset(asset)
+    print(hacker)
+    hacker.decrypt_asset('CryptoToken')
+    print(hacker)
+    # Tests successful decryption of asset in inventory with Security Chip in storage
+    hacker.rig.add_asset(Asset('Security Chip'))
+    asset = Asset('CryptoToken')
+    asset.is_encrypted = True
+    hacker.add_asset(asset)
+    print(hacker)
+    hacker.decrypt_asset('CryptoToken')
+    print(hacker)
+    # Tests successful decryption of asset in storage with Security Chip in inventory
+    hacker.add_asset(Asset('Security Chip'))
+    asset = Asset('CryptoToken')
+    asset.is_encrypted = True
+    hacker.rig.add_asset(asset)
+    print(hacker.rig)
+    hacker.decrypt_asset('CryptoToken')
+    print(hacker.rig)
+    # Tests successful decryption of asset in storage with Security Chip in storage
+    hacker.rig.add_asset(Asset('Security Chip'))
+    asset = Asset('CryptoToken')
+    asset.is_encrypted = True
+    hacker.rig.add_asset(asset)
+    print(hacker.rig)
+    hacker.decrypt_asset('CryptoToken')
+    print(hacker.rig)
+    # Tests decryption of asset when already decrypted
+    hacker.add_asset(Asset('Security Chip'))
+    hacker.decrypt_asset('CryptoToken')
+    hacker.decrypt_asset('Data Spike')
 
 # Runs testing functions for program
 def main():
@@ -208,17 +298,16 @@ def main():
     #generate_asset()
     #take_hit()
     #show_condition()
-
-    create_hacker()
-    add_item_to_inventory()
-    remove_item_from_inventory()
+    #create_hacker()
+    #add_item_to_inventory()
+    #remove_item_from_inventory()
 
     #acquire_rig()
     #repair_rig()
     #upgrade_rig()
 
     #encrypt_asset()
-    #decrypt_asset()
+    decrypt_asset()
     #store_asset()
     #retrieve_asset()
 
