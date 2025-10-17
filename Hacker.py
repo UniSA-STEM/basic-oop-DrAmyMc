@@ -159,8 +159,7 @@ class Hacker:
             else:
                 return None
 
-    # TODO: THIS IS VERY MUCH IN PROCESS - does security chip need to be in inventory, or in rig storage? Need separate method for
-    # inventoy versus storage, encryption versus decryption???
+    # TODO: TEST THIS WHOLE ENCRYPT/DECRYPT AND CONDENSE THE CODE DOWN
     def encrypt_inventory(self, asset_name):
         required = 'Security Chip'
         if self.scan_inventory(required) == None and self.rig == None:
@@ -243,7 +242,7 @@ class Hacker:
                         self.rig.remove_asset(required)
                     print(f"Your {asset_name} in storage has now been decrypted.\n")
 
-    # TODO: Need to link with attacked rig and their exposure status?
+    # Launch attack at opponent's rig
     def launch_attack(self, target_rig):
         if self.is_exposed == False:
             required = 'Data Spike'
@@ -259,6 +258,7 @@ class Hacker:
                 if self.trace_level == 5:
                     self.is_exposed = True
                     print(f"You are now exposed!!! Be careful, and reduce your trace.\n")
+                target_rig.take_hit()
         else:
             print("You cannot launch a data spike while exposed. Reduce your exposure level.\n")
 
@@ -270,8 +270,13 @@ class Hacker:
                 print("You cannot extract assets - you do not have a rig!\n")
             elif self.rig.scan_storage(required) == None:
                 print(f"You cannot extract assets - you need a {required} in your rig's storage.\n")
+            elif target_rig.is_broken == False:
+                print(f"You cannot extract assets from this rig - it is not broken!\n")
             else:
-                # TODO Need to actually get the assets here!!!!!
+                for item in target_rig.storage:
+                    if item.is_encrypted == False:
+                        self.add_asset(item)
+                        target_rig.remove_asset(item.name)
                 self.rig.remove_asset(required)
                 print(f"Congratulations, {self.name}! You have extracted the unsecured assets from the target rig.\n")
                 self.trace_level += 1
@@ -281,6 +286,12 @@ class Hacker:
         else:
             print("You cannot extract assets while exposed. Reduce your exposure level.\n")
 
+    def reduce_trace(self):
+        if self.trace_level > 0:
+            self.trace_level -= 1
+            print (f"You have laid low and reduced your trace. Your trace level is now {self.trace_level}.\n")
+        else:
+            print("Your trace level is already 0, you cannot reduce your trace further.\n")
     # Returns output for hacker as per assignment specification
     def __str__(self):
         details = []

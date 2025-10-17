@@ -13,7 +13,7 @@ class Asset:
     # The type_list defines the five possible asset names
     type_list = ['CryptoToken', 'Data Spike', 'Removable Drive', 'Security Chip', 'Hardware Patch']
     # The description_list provides the five matching descriptions for each asset type
-    description_list = ['Use to acquire or repair rigs.', 'Used in battles', 'Found in rigs and used for extraction.', 'Used to encrypt or decrypt assets.', 'Used to upgrade rigs.']
+    description_list = ['Use to acquire or repair rigs.', 'Used in battles.', 'Found in rigs and used for extraction.', 'Used to encrypt or decrypt assets.', 'Used to upgrade rigs.']
 
     # The asset is initialised with a name parameter
     def __init__(self, name):

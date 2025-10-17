@@ -12,28 +12,51 @@ from Hacker import Hacker
 from Rig import Rig
 from Asset import Asset
 
-# Tests direct creation of each asset type and display of string method
+# Tests direct creation of each asset type and invalid asset types
 def create_asset():
+    # Create the five different types of assets
     asset1 = Asset('CryptoToken')
     asset2 = Asset('Data Spike')
     asset3 = Asset('Removable Drive')
     asset4 = Asset('Security Chip')
     asset5 = Asset('Hardware Patch')
+    # Set two of the assets as encrypted
+    asset2.is_encrypted = True
     asset5.is_encrypted = True
+    # Display the string for each asset showing its name, description and encryption status
     print(asset1)
     print(asset2)
     print(asset3)
     print(asset4)
     print(asset5)
-
-# Tests creation of an incorrect asset type
-def create_incorrect_asset():
+    # Pass an incorrect asset name (not found on the type list) to the asset class
     asset6 = Asset('USB')
+    asset7 = Asset(1)
+    # Display the string for the incorrect assets, showing as 'Invalid: Please remove'
     print(asset6)
+    print(asset7)
 
-# Tests direction creation of a rig and display of string method
+# Tests direct creation of a rig, and setting correct and incorrect attributes
 def create_rig():
+    # Creation of rig and display of string method
     rig = Rig('Mah Computer')
+    print(rig)
+    # Setting attributes to allowable values
+    rig.name = 'My Computer'
+    rig.damage_counter = 1.5
+    rig.is_broken = True
+    rig.upgrade_level = 2
+    print(rig)
+    # Any values passed to rig name will be converted to a string
+    rig.name = 123456
+    # The following values are out of range or incorrect types and will not be updated
+    rig.damage_counter = 5
+    rig.damage_counter = -1
+    rig.damage_counter = 'abc'
+    rig.is_broken = 'yes'
+    rig.upgrade_level = 5
+    rig.upgrade_level = -1
+    rig.upgrade_level = 'abc'
     print(rig)
 
 # Tests creation of a hacker and display of string method
@@ -162,10 +185,9 @@ def remove_item_from_inventory():
 # Runs testing functions for program
 def main():
     create_asset()
-    #create_incorrect_asset()
-    #create_rig()
-    create_hacker()
-    acquire_rig()
+    create_rig()
+    #create_hacker()
+    #acquire_rig()
     #scan_storage()
     #add_item_to_storage()
     #remove_item_from_storage()

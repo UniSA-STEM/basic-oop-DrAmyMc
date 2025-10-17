@@ -50,17 +50,17 @@ class Rig:
 
     def set_damage_counter(self, counter):
         # Ensures only valid numbers can be passed to damage counter attribute
-        if counter >= 0 and counter <= 2:
+        if (type(counter) == float or type(counter) == int) and counter >= 0 and counter <= 2:
             self.__damage_counter = counter
 
     def set_is_broken(self, broken):
-        # Ensures only a True/False value can be passed to encryption status
-        if broken == True or broken == False:
+        # Ensures only a True/False boolean value can be passed to encryption status
+        if type(broken) == bool:
             self.__is_broken = broken
 
     def set_upgrade_level(self, level):
         # Ensures only valid numbers can be passed to upgrade level attribute
-        if level >= 0 and level <=3:
+        if type(level) == int and level >= 0 and level <=3:
             self.__upgrade_level = level
 
     # Properties for each attribute
@@ -117,20 +117,20 @@ class Rig:
         else:
             hit_damage = 0.25
         self.damage_counter += hit_damage
-        print(f"You have been hit! Your damage is now {self.damage_counter}.\n")
+        print(f"{self.name}, you have been hit! Your damage is now {self.damage_counter}.\n")
         # Sets broken status if damage counter reaches 2
         if self.damage_counter >= 2:
             self.is_broken = True
-            print(f"Your rig is now broken :( Your assets are vulnerable!\n")
+            print(f"{self.name}, your rig is now broken :( Your assets are vulnerable!\n")
 
     # Returns condition of rig based on damage count
     def show_condition(self):
         if self.damage_counter == 0:
-            return f"Pristine condition - damage count {self.damage_counter} out of 2"
+            return f"Pristine condition: Damage count {self.damage_counter} out of 2"
         elif self.damage_counter < 1:
-            return f"Partially damaged - damage count {self.damage_counter} out of 2"
+            return f"Partially damaged: Damage count {self.damage_counter} out of 2"
         elif self.damage_counter < 2:
-            return f"Heavily damaged - damage count {self.damage_counter} out of 2"
+            return f"Heavily damaged: Damage count {self.damage_counter} out of 2"
         else:
             return f"Broken - maximum damage! This rig's assets are exposed."
 
