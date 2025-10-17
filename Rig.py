@@ -90,8 +90,12 @@ class Rig:
         else:
             max_storage = 10
         # Ensures only valid assets can be added to storage and that storage space is available:
-        if isinstance(asset, Asset) and asset.name != 'Invalid' and len(self.storage) < max_storage:
-            self.__storage.append(asset)
+        if isinstance(asset, Asset) and asset.name != 'Invalid':
+            if len(self.storage) < max_storage:
+                self.__storage.append(asset)
+            else:
+                print(f"You cannot add another asset as you do not have enough storage available."
+                      f"Please upgrade your rig or move items to inventory.\n")
 
     # Removes an asset from storage on rig
     def remove_asset(self, asset_name):

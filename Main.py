@@ -59,30 +59,6 @@ def create_rig():
     rig.upgrade_level = 'abc'
     print(rig)
 
-# Tests creation of a hacker and display of string method
-def create_hacker():
-    hacker = Hacker('Neo')
-    print(hacker)
-
-# Tests acquisition of rig by hacker in exchange for one CryptoToken, and if rig is already present and if missing Cryptoken
-def acquire_rig():
-    hacker = Hacker('Neo')
-    hacker.remove_asset('CryptoToken')
-    hacker.acquire_rig('Mah Rig')
-    asset = Asset('CryptoToken')
-    hacker.add_asset(asset)
-    hacker.acquire_rig('Mah Rig Take 2')
-    print(hacker)
-    print(hacker.get_rig())
-    hacker.acquire_rig('New Rig')
-
-# Tests scanning storage on rig to locate item that is found and item that is not found
-def scan_storage():
-    rig = Rig('Mah Computer')
-    print(rig)
-    rig.scan_storage('Data Spike')
-    rig.scan_storage('CryptoToken')
-
 # Tests adding a valid asset, invalid asset, and non-asset to storage on rig
 def add_item_to_storage():
     rig = Rig('Mah Computer')
@@ -98,24 +74,103 @@ def add_item_to_storage():
 def remove_item_from_storage():
     rig = Rig('Mah Computer')
     print(rig)
+    # Remove asset found in storage
     rig.remove_asset('Data Spike')
-    print(rig)
+    # Attempt to remove asset not found in storage
     rig.remove_asset('CryptoToken')
+    # Attempt to remove item that is not a valid asset
+    rig.remove_asset('USB')
+    print(rig)
 
-# Tests random asset generate function for rig (3 initial assets upon create, 10 new random assets)
+# Tests random asset generate function for rig along with add_asset function
 def generate_asset():
     rig = Rig('Mah Computer')
+    # Only one asset will be generated, then maximum storage (4 items) will be reached
     rig.generate_asset()
     rig.generate_asset()
-    rig.generate_asset()
-    rig.generate_asset()
-    rig.generate_asset()
-    rig.generate_asset()
-    rig.generate_asset()
+    print(rig)
+    # Only two more assets will be generated, then maximum storage (6 items) will be reached
+    rig.upgrade_level = 1
     rig.generate_asset()
     rig.generate_asset()
     rig.generate_asset()
     print(rig)
+    # Only two more assets will be generated, then maximum storage (8 items) will be reached
+    rig.upgrade_level = 2
+    rig.generate_asset()
+    rig.generate_asset()
+    rig.generate_asset()
+    print(rig)
+    # Only two more assets will be generated, then maximum storage (10 items) will be reached
+    rig.upgrade_level = 3
+    rig.generate_asset()
+    rig.generate_asset()
+    rig.generate_asset()
+    print(rig)
+
+# Tests rig taking a hit, reaching broken state, and different damage levels base on upgrade level
+def take_hit():
+    rig = Rig('Mah Computer')
+    rig.take_hit()
+    print(rig)
+    rig.take_hit()
+    print(rig)
+    rig2 = Rig('Mah Better Computer')
+    rig2.upgrade_level = 1
+    rig2.take_hit()
+    rig2.upgrade_level = 2
+    rig2.take_hit()
+    rig2.upgrade_level = 3
+    rig2.take_hit()
+    print(rig2)
+
+# Tests different condition displays for rig
+def show_condition():
+    rig = Rig('Mah Computer')
+    print(rig.show_condition())
+    rig.damage_counter = 0.75
+    print(rig.show_condition())
+    rig.damage_counter = 1.0
+    print(rig.show_condition())
+    rig.damage_counter = 1.75
+    print(rig.show_condition())
+    rig.damage_counter = 2
+    print(rig.show_condition())
+
+# Tests creation of a hacker and display of string method
+def create_hacker():
+    hacker = Hacker('Neo')
+    print(hacker)
+
+# Tests adding a valid asset, invalid asset, and non-asset to hacker's inventory
+def add_item_to_inventory():
+    hacker = Hacker('Neo')
+    valid_asset = Asset('CryptoToken')
+    invalid_asset = Asset('USB')
+    non_asset = 'harddrive'
+    hacker.add_asset(valid_asset)
+    hacker.add_asset(invalid_asset)
+    hacker.add_asset(non_asset)
+    print(hacker)
+
+# Tests removing an asset from inventory, and attempting to remove an asset that is not in inventory
+def remove_item_from_inventory():
+    hacker = Hacker('Neo')
+    hacker.remove_asset('Data Spike')
+    hacker.remove_asset('CryptoToken')
+    print(hacker)
+
+# Tests acquisition of rig by hacker in exchange for one CryptoToken, and if rig is already present and if missing Cryptoken
+def acquire_rig():
+    hacker = Hacker('Neo')
+    hacker.remove_asset('CryptoToken')
+    hacker.acquire_rig('Mah Rig')
+    asset = Asset('CryptoToken')
+    hacker.add_asset(asset)
+    hacker.acquire_rig('Mah Rig Take 2')
+    print(hacker)
+    print(hacker.get_rig())
+    hacker.acquire_rig('New Rig')
 
 # Tests repair rig function for rig, including when rig doesn't need repair and when CryptoToken is missing
 def repair_rig():
@@ -144,59 +199,31 @@ def upgrade_rig():
     rig.upgrade_rig()
     print(rig)
 
-# Tests rig taking a hit and broken state changing to broken when enough damage sustained
-def take_hit():
-    rig = Rig('Mah Computer')
-    rig.take_hit()
-    print(rig)
-    rig.take_hit()
-    print(rig)
-
-# Tests scanning hacker's inventory and storage to locate item that is found and item that is not found#
-def scan_inventory():
-    hacker = Hacker('Neo')
-    print(hacker)
-    hacker.scan_inventory('Data Spike')
-    hacker.scan_inventory('CryptoToken')
-    #hacker.acquire_rig('Mah Computer')
-    hacker.scan_storage('Data Spike')
-    hacker.scan_storage('CryptoToken')
-
-# Tests adding a valid asset, invalid asset, and non-asset to hacker's inventory
-def add_item_to_inventory():
-    hacker = Hacker('Neo')
-    valid_asset = Asset('CryptoToken')
-    invalid_asset = Asset('USB')
-    non_asset = 'harddrive'
-    hacker.add_asset(valid_asset)
-    hacker.add_asset(invalid_asset)
-    hacker.add_asset(non_asset)
-    print(hacker)
-
-# Tests removing an asset from inventory, and attempting to remove an asset that is not in inventory
-def remove_item_from_inventory():
-    hacker = Hacker('Neo')
-    hacker.remove_asset('Data Spike')
-    hacker.remove_asset('CryptoToken')
-    print(hacker)
-
-# TODO: Need to write tests for rig for upgrade levels with different amounts of damage and storage
-
 # Runs testing functions for program
 def main():
-    create_asset()
-    create_rig()
-    #create_hacker()
-    #acquire_rig()
-    #scan_storage()
+    #create_asset()
+    #create_rig()
     #add_item_to_storage()
     #remove_item_from_storage()
     #generate_asset()
+    #take_hit()
+    #show_condition()
+
+    create_hacker()
+    add_item_to_inventory()
+    remove_item_from_inventory()
+
+    #acquire_rig()
     #repair_rig()
     #upgrade_rig()
-    #take_hit()
-    #scan_inventory()
-    #add_item_to_inventory()
-    #remove_item_from_inventory()
+
+    #encrypt_asset()
+    #decrypt_asset()
+    #store_asset()
+    #retrieve_asset()
+
+    #launch_attack()
+    #extract_assets()
+
 
 main()
