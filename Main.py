@@ -359,14 +359,14 @@ def reduce_trace():
 
 # Runs testing functions for program
 def main():
-    create_asset()
+    #create_asset()
     #create_rig()
     #add_item_to_storage()
     #remove_item_from_storage()
     #generate_asset()
     #take_hit()
     #show_condition()
-    #create_hacker()
+    create_hacker()
     #add_item_to_inventory()
     #remove_item_from_inventory()
 

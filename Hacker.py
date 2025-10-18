@@ -76,7 +76,7 @@ class Hacker:
     # Adds an asset to hacker's inventory
     def add_asset(self, asset):
         # Ensures only valid assets can be added to inventory
-        if isinstance(asset, Asset) and asset.name != 'Invalid':
+        if isinstance(asset, Asset):
             self.__inventory.append(asset)
 
     # Removes an asset from hacker's inventory
