@@ -32,7 +32,7 @@ def create_asset():
     # Pass an incorrect asset name (not found on the type list) to the asset class
     asset6 = Asset('USB')
     asset7 = Asset(1)
-    # Display the string for the incorrect assets, showing as 'Invalid: Please remove'
+    # Display the string for the incorrect assets, showing as None
     print(asset6)
     print(asset7)
 
@@ -359,7 +359,7 @@ def reduce_trace():
 
 # Runs testing functions for program
 def main():
-    #create_asset()
+    create_asset()
     #create_rig()
     #add_item_to_storage()
     #remove_item_from_storage()
@@ -379,7 +379,7 @@ def main():
     #store_asset()
     #retrieve_asset()
 
-    launch_attack()
+    #launch_attack()
     #extract_assets()
     #reduce_trace()
 

@@ -7,60 +7,120 @@ Username: MCCAY044
 This is my own work as defined by the University's Academic Misconduct Policy.
 """
 
-# Creation of Asset class
+
 class Asset:
-    """This is the documentation for the asset class"""
-    # The type_list defines the five possible asset names
+    """
+    Represents a digital asset that may be used by a hacker or rig (computer).
+
+    Assets have a specific type (e.g. 'CryptoToken', 'Data Spike').
+    Each type of asset is associated with a predefined description.
+    Assets can be encrypted or unencrypted (the default).
+    """
+
+    # List of the five valid asset types
     type_list = ['CryptoToken', 'Data Spike', 'Removable Drive', 'Security Chip', 'Hardware Patch']
-    # The description_list provides the five matching descriptions for each asset type
-    description_list = ['Use to acquire or repair rigs.', 'Used in battles.', 'Found in rigs and used for extraction.', 'Used to encrypt or decrypt assets.', 'Used to upgrade rigs.']
 
-    # The asset is initialised with a name parameter
-    def __init__(self, name):
-        # If the name is found in the type_list, the asset initialises with the correct matching description
-        if name in Asset.type_list:
-            self.__name = name
-            self.__description = Asset.description_list[Asset.type_list.index(name)]
-            self.__is_encrypted = False
-        # If the name is not in the type_list, the asset is initialised as 'Invalid'
+    # Corresponding descriptions for each asset type
+    description_list = ['Use to acquire or repair rigs.', 'Used in battles.', 'Found in rigs and used for extraction.',
+                        'Used to encrypt or decrypt assets.', 'Used to upgrade rigs.']
+
+    def __new__(cls, name):
+        """
+        Creates a new Asset instance only if the provided name is valid.
+        This method is called before the __init__ method to prevent creation
+        of invalid asset types by checking against values in 'type_list'.
+
+        Args:
+            name (str): The name (type) of the asset to create.
+
+        Returns:
+            Asset object if name is a valid asset type, otherwise None.
+        """
+        if name in cls.type_list:
+            return super().__new__(cls)
         else:
-            self.__name = 'Invalid'
-            self.__description = 'Please remove'
-            self.__is_encrypted = False
+            print(
+                f"Error - {name} is not a valid asset type (CryptoToken, Data Spike, Removable Drive, Security Chip, or Hardware Patch).")
+            return None
+        # Code inspired by:
+        # Zuo Lin, L., 2025. __new__ vs __init__ Methods in Python. [online] Built-In.
+        # Available at: <https://builtin.com/data-science/new-python> [Accessed 18 October 2025].
 
-    # Getter functions for each attribute
+    def __init__(self, name):
+        """
+        Initialises a new Asset instance with its name (type), matching description,
+        and encryption status.
+
+        Args:
+            name (str): The name of the asset, which must exist in 'type_list'.
+        """
+        self.__name = name
+        # Correct description initialised from 'description_list' based on asset name
+        self.__description = Asset.description_list[Asset.type_list.index(name)]
+        self.__is_encrypted = False
+
     def get_name(self):
+        """
+        Returns the asset's name.
+
+        Returns:
+            str: The name of the asset.
+        """
         return self.__name
 
     def get_description(self):
+        """
+        Returns the asset's description.
+
+        Returns:
+            str: The description of the asset.
+        """
         return self.__description
 
     def get_is_encrypted(self):
+        """
+        Returns whether the asset is currently encrypted.
+
+        Returns:
+            bool: True if asset encrypted, False otherwise.
+        """
         return self.__is_encrypted
 
-    # Setter function for name attribute, which also automatically sets matching description via lookup
     def set_name(self, name):
-        # Ensures asset is of a correct type by checking name argument against list of asset types
+        """
+        Updates the asset's name and automatically sets the matching description.
+
+        Args:
+            name (str): The new asset name. Must be a valid type from 'type_list'.
+        """
         if name in Asset.type_list:
             self.__name = name
             self.__description = Asset.description_list[Asset.type_list.index(name)]
 
-    # Setter function for is_encrypted attribute
     def set_is_encrypted(self, encrypted):
-        # Ensures only a True/False value can be passed to encryption status
-        if encrypted == True or encrypted == False:
+        """
+        Sets the encryption status of the asset.
+
+        Args:
+            encrypted (bool): The new encryption status. Must be True or False.
+        """
+        if isinstance(encrypted, bool):
             self.__is_encrypted = encrypted
 
-    # Properties for each attribute
+    # Property definitions
     name = property(get_name, set_name)
     description = property(get_description)
     is_encrypted = property(get_is_encrypted, set_is_encrypted)
 
-    # Returns output for asset as per assignment specification
     def __str__(self):
-        # Adds the string '[Encrypted]' if asset is encrypted
+        """
+        Returns a formatted string representation of the asset.
+
+        Returns:
+            str: The asset's name and description.
+                 Includes '[Encrypted]' if the asset is encrypted.
+        """
         if self.is_encrypted:
             return f"{self.name}: {self.description} [Encrypted]"
-        # Omits the string '[Encrypted]' if asset is not encrypted
         else:
             return f"{self.name}: {self.description}"
