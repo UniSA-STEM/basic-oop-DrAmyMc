@@ -29,11 +29,16 @@ class Rig:
         """
         Initialises a new Rig instance.
 
-        The rig starts with a default set of assets in storage, zero damage,
-        an upgrade level of 0, and an unbroken state.
-
         Args:
              name (str): The name of the rig.
+
+        Attributes:
+            __name (str): The rig's name.
+            __damage_counter (int): Tracks the amount of damage the rig has sustained (0-2), initially 0.
+            __is_broken (bool): Indicates whether the rig is currently broken, initially False.
+            __storage (list[Asset]): A list of Asset objects stored in the rig, initially two 'Data Spike' assets
+                                    and one 'Removable Drive'.
+            __upgrade_level (int): The rig's upgrade level (0-3), initially 0.
         """
         self.__name = name
         self.__damage_counter = 0
@@ -50,11 +55,11 @@ class Rig:
         return self.__name
 
     def get_damage_counter(self):
-        """Returns the current damage counter value."""
+        """Returns the current damage counter value (0-2)."""
         return self.__damage_counter
 
     def get_is_broken(self):
-        """Returns whether the rig is broken."""
+        """Returns whether the rig is broken (True/False)."""
         return self.__is_broken
 
     def get_storage(self):
@@ -62,7 +67,7 @@ class Rig:
         return self.__storage
 
     def get_upgrade_level(self):
-        """Returns the current upgrade level."""
+        """Returns the current upgrade level (0-2)."""
         return self.__upgrade_level
 
     # --------------
@@ -74,7 +79,7 @@ class Rig:
         Updates the rig's name.
 
         Args:
-            name (str): The new name for the rig.
+            name (str): The new name for the rig, automatically converted to a string.
         """
         self.__name = str(name)
 

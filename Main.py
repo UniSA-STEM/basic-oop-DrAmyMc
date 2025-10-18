@@ -370,7 +370,7 @@ def main():
     #add_item_to_inventory()
     #remove_item_from_inventory()
 
-    #acquire_rig()
+    acquire_rig()
     #repair_rig()
     #upgrade_rig()
 

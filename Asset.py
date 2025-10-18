@@ -49,10 +49,16 @@ class Asset:
 
     def __init__(self, name):
         """
-        Initialises a new Asset instance with its name (type), matching description, and encryption status.
+        Initialises a new Asset instance.
 
         Args:
-            name (str): The name of the asset, which must exist in 'type_list'.
+            name (str): The name (tyoe) of the asset, which must exist in 'type_list'.
+
+        Attributes:
+            __name (str): The asset's name (type).
+            __description (str): The description automatically matched from 'description_list' based on
+                                the asset's name.
+            __is_encrypted (bool): Indicates whether the asset is encrypted, initially False.
         """
         self.__name = name
         # Correct description initialised from 'description_list' based on asset name
@@ -72,7 +78,7 @@ class Asset:
         return self.__description
 
     def get_is_encrypted(self):
-        """Returns whether the asset is currently encrypted."""
+        """Returns whether the asset is currently encrypted (True/False)."""
         return self.__is_encrypted
 
     # --------------
