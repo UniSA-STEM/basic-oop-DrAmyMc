@@ -7,105 +7,186 @@ Username: MCCAY044
 This is my own work as defined by the University's Academic Misconduct Policy.
 """
 
-# Imports each class from their files
 from Hacker import Hacker
 from Rig import Rig
 from Asset import Asset
 
-# Tests direct creation of each asset type and invalid asset types
-def create_asset():
-    # Create the five different types of assets
+def create_set_display_assets():
+    """
+    Direct tests for the Asset class for asset creation, setting attributes, and string display.
+
+    Tests:
+     - Creation of valid asset types.
+     - Handling of invalid asset types.
+     - Changing the name (type) of asset manually.
+     - Setting encryption status manually.
+     - Displaying string representations.
+
+     Expected behaviour:
+     - Valid asset types should be created successfully.
+     - Invalid asset types should not be created (prints warning, returns None).
+     - Valid name change should set new name and description successfully.
+     - Invalid name change should be unsuccessful.
+     - Encrypted assets should display 'Encrypted' status in their string output.
+    """
+    print("\n=== TEST: Create, Modify and Display Assets ===\n")
+
+    # --- Create valid assets ---
     asset1 = Asset('CryptoToken')
     asset2 = Asset('Data Spike')
     asset3 = Asset('Removable Drive')
     asset4 = Asset('Security Chip')
     asset5 = Asset('Hardware Patch')
-    # Set two of the assets as encrypted
+
+    # --- Attempt to create invalid assets ---
+    asset6 = Asset('USB')   # Invalid name (not in type_list)
+    asset7 = Asset(1)       # Invalid type (not a string)
+
+    # --- Modify asset name ---
+    asset4.name = 'CryptoToken' # Valid name
+    asset4.name = 'USB'         # Invalid name (not in type_list)
+
+    # --- Modify encryption status ---
     asset2.is_encrypted = True
     asset5.is_encrypted = True
-    # Display the string for each asset showing its name, description and encryption status
+
+    # --- Display asset details ---
     print(asset1)
     print(asset2)
     print(asset3)
     print(asset4)
     print(asset5)
-    # Pass an incorrect asset name (not found on the type list) to the asset class
-    asset6 = Asset('USB')
-    asset7 = Asset(1)
-    # Display the string for the incorrect assets, showing as None
-    print(asset6)
-    print(asset7)
 
-# Tests direct creation of a rig, and setting correct and incorrect attributes
-def create_rig():
-    # Creation of rig and display of string method
+def create_set_display_rig():
+    """
+        Direct tests for the Rig class for rig creation, setting attributes and string display.
+
+        Tests:
+         - Creation of a rig instance.
+         - Changing name, damager_counter, is_broken, and upgrade_level manually.
+         - Displaying string representations.
+
+         Expected behaviour:
+         - Rig should be created successfully.
+         - Valid changes should be applied and displayed in string representation.
+         - Invalid changes should not be applied and string representation should be displayed unchanged.
+        """
+    print("\n=== TEST: Create, Modify and Display Rig ===\n")
+
+    # --- Create and display rig ---
     rig = Rig('Mah Computer')
-    print(rig)
-    # Setting attributes to allowable values
-    rig.name = 'My Computer'
-    rig.damage_counter = 1.5
-    rig.is_broken = True
-    rig.upgrade_level = 2
-    print(rig)
-    # Any values passed to rig name will be converted to a string
-    rig.name = 123456
-    # The following values are out of range or incorrect types and will not be updated
-    rig.damage_counter = 5
-    rig.damage_counter = -1
-    rig.damage_counter = 'abc'
-    rig.is_broken = 'yes'
-    rig.upgrade_level = 5
-    rig.upgrade_level = -1
-    rig.upgrade_level = 'abc'
+    print("--- Newly created rig ---")
     print(rig)
 
-# Tests adding a valid asset, invalid asset, and non-asset to storage on rig
-def add_item_to_storage():
+    # --- Modify attributes to valid values and display new values ---
+    rig.name = 123456           # Value will be converted to a string
+    rig.damage_counter = 1.5    # Valid float in range 0-2
+    rig.is_broken = True        # Valid boolean value
+    rig.upgrade_level = 2       # Valid integer in range 0-3
+    print("--- Rig with modified attributes ---")
+    print(rig)
+
+    # --- Attempt to modify attributes to invalid values ---
+    rig.damage_counter = 5      # Out of range 0-2
+    rig.damage_counter = -1     # Out of range 0-2
+    rig.damage_counter = 'abc'  # Not an integer
+    rig.is_broken = 'yes'       # Not boolean value
+    rig.upgrade_level = 5       # Out of range 0-3
+    rig.upgrade_level = -1      # Out of range 0-3
+    rig.upgrade_level = 'abc'   # Not an integer
+    print("--- Rig with no invalid changes - same as previous display ---")
+    print(rig)
+
+def scan_add_remove_storage():
+    """
+        Direct tests for the Rig class for adding and removing assets from storage.
+
+        Tests:
+         - Adding assets (valid and invalid) to a rig's storage.
+         - Removing assets (valid and invalid) from a rig's storage.
+
+         Expected behaviour:
+         - Valid assets should be successfully added and removed from storage.
+         - Invalid assets should not be added or removed from storage.
+
+         Notes:
+             - scan_storage function indirectly tested via its utilisation in remove_asset function.
+             - Limits to storage size based on upgrade level will be tested as part of generate_asset function.
+        """
+    print("\n=== TEST: Search, Add and Remove Assets from Rig's Storage ===\n")
+
+    # --- Create rig ---
     rig = Rig('Mah Computer')
+    print("--- This new rig should have default storage of 2x Data Spikes and 1x Removable Drive ---")
+    print(rig)
+
+    # --- Create valid and invalid assets ---
     valid_asset = Asset('CryptoToken')
-    invalid_asset = Asset('USB')
-    non_asset = 'harddrive'
+    invalid_asset = Asset('USB')        # Not a valid asset name (type)
+    non_asset = 'harddrive'             # Not an Asset object
+
+    # --- Add assets to rig's storage and display ---
     rig.add_asset(valid_asset)
     rig.add_asset(invalid_asset)
     rig.add_asset(non_asset)
+    print("\n--- This rig should have one CryptoToken added to default storage ---")
     print(rig)
 
-# Tests removing an asset from storage, and attempting to remove an asset that is not in storage
-def remove_item_from_storage():
-    rig = Rig('Mah Computer')
+    # --- Remove assets from rig's storage and display ---
+    rig.remove_asset('Data Spike')      # Valid asset to be removed
+    rig.remove_asset('Security Chip')   # Attempt to remove asset not found in storage
+    rig.remove_asset('USB')             # Attempt to remove invalid asset not found in storage
+    print("--- This rig should now have only one Data Spike left in storage ---")
     print(rig)
-    # Remove asset found in storage
-    rig.remove_asset('Data Spike')
-    # Attempt to remove asset not found in storage
-    rig.remove_asset('CryptoToken')
-    # Attempt to remove item that is not a valid asset
-    rig.remove_asset('USB')
-    print(rig)
+
 
 # Tests random asset generate function for rig along with add_asset function
 def generate_asset():
+    """
+        Direct tests for the Rig class for random asset generation and storage size limits.
+
+        Tests:
+         - Generating random assets and adding them to the rig's storage.
+         - Maximum storage limit for asset varying based on upgrade level of rig.
+
+         Expected behaviour:
+         - Randomly generated assets should be successfully added to the rig's storage if the maximum storage
+            limit is not exceeded.
+         - Maximum storage limit will change from 4 to 6 to 8 to 10 items in line with upgrade levels of 0, 1, 2 and 3.
+        """
+    print("\n=== TEST: Generate Random Asset and Check Maximum Storage Limits ===\n")
+
+    # --- Create rig ---
     rig = Rig('Mah Computer')
-    # Only one asset will be generated, then maximum storage (4 items) will be reached
-    rig.generate_asset()
-    rig.generate_asset()
+
+    # --- Test asset generation for Level 0 rig - max items 4 ---
+    rig.generate_asset()    # 4th item in storage
+    rig.generate_asset()    # Limit exceeded - will not add
+    print("\n--- This level 0 rig should have 4 items in storage ---")
     print(rig)
-    # Only two more assets will be generated, then maximum storage (6 items) will be reached
+
+    # --- Test asset generation for Level 1 rig - max items 6 ---
     rig.upgrade_level = 1
-    rig.generate_asset()
-    rig.generate_asset()
-    rig.generate_asset()
+    rig.generate_asset()    # 5th item in storage
+    rig.generate_asset()    # 6th item in storage
+    rig.generate_asset()    # Limit exceeded - will not add
+    print("\n--- This level 1 rig should have 6 items in storage ---")
     print(rig)
-    # Only two more assets will be generated, then maximum storage (8 items) will be reached
+
+    # --- Test asset generation for Level 2 rig - max items 8 ---
     rig.upgrade_level = 2
-    rig.generate_asset()
-    rig.generate_asset()
-    rig.generate_asset()
+    rig.generate_asset()    # 7th item in storage
+    rig.generate_asset()    # 8th item in storage
+    rig.generate_asset()    # Limit exceeded - will not add
+    print("\n--- This level 2 rig should have 8 items in storage ---")
     print(rig)
-    # Only two more assets will be generated, then maximum storage (10 items) will be reached
+
+    # --- Test asset generation for Level 3 rig - max items 10 ---
     rig.upgrade_level = 3
-    rig.generate_asset()
-    rig.generate_asset()
-    rig.generate_asset()
+    rig.generate_asset()    # 9th item in storage
+    rig.generate_asset()    # 10th item in storage
+    rig.generate_asset()    # Limit exceeded - will not add
+    print("\n--- This level 3 rig should have 10 items in storage ---")
     print(rig)
 
 # Tests rig taking a hit, reaching broken state, and different damage levels base on upgrade level
@@ -359,18 +440,19 @@ def reduce_trace():
 
 # Runs testing functions for program
 def main():
-    #create_asset()
-    #create_rig()
-    #add_item_to_storage()
-    #remove_item_from_storage()
-    #generate_asset()
+    #create_set_display_assets()
+    #create_set_display_rig()
+    #scan_add_remove_storage()
+    generate_asset()
+
     #take_hit()
     #show_condition()
-    create_hacker()
+
+    #create_hacker()
     #add_item_to_inventory()
     #remove_item_from_inventory()
 
-    acquire_rig()
+    #acquire_rig()
     #repair_rig()
     #upgrade_rig()
 
