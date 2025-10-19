@@ -395,51 +395,136 @@ def scan_add_remove_inventory():
     print("--- This hacker should now have only one encrypted CryptoToken left in inventory ---")
     print(hacker)
 
-# Tests rig acquisition function for Hacker (exceptions and successful)
 def acquire_rig():
-    # Tests acquisition without CryptoToken available
+    """
+    Tests rig acquisition for the Hacker class.
+
+    Tests:
+        - Attempting rig acquisition without a CryptoToken in inventory.
+        - Attempting rig acquisition with an encrypted CryptoToken in inventory.
+        - Successful rig acquisition using an unencrypted CryptoToken.
+        - Attmeping to acquire an additional rig when one is already owned.
+
+    Expected behaviour:
+        - Hacker cannot acquire a rig without an unencrypted CryptoToken.
+        - Upon rig acquisition, one CryptoToken is consumed and the hacker gains a rig.
+        - Hacker cannot acquire another rig if one is already owned.
+    """
+    print("\n=== TEST: Acquisition of Rig by Hacker ===")
+
+    # --- Create hacker ---
     hacker = Hacker('Neo')
+
+    # --- Attempt rig acquisition with no CryptoToken ---
     hacker.remove_asset('CryptoToken')
-    hacker.acquire_rig('Mah Rig')
-    # Tests successful acquisition of rig
-    hacker.add_asset(Asset('CryptoToken'))
-    hacker.acquire_rig('Mah Rig Take 2')
     print(hacker)
-    print(hacker.rig)
-    # Tests acquisition when a rig is already present
+    hacker.acquire_rig('Mah Rig')
+
+    # --- Attempt rig acquisition with encrypted CryptoToken ---
+    asset = Asset('CryptoToken')
+    asset.is_encrypted = True
+    hacker.add_asset(asset)
+    print(hacker)
+    hacker.acquire_rig('Mah Rig Take 2')
+
+    # Successful acquisition of rig with unencrypted CryptoToken
+    hacker.add_asset(Asset('CryptoToken'))
+    print(hacker)
+    hacker.acquire_rig('Mah Rig Take 3')
+    print(hacker)
+
+    # Attempt acquisition when a rig is already present
     hacker.acquire_rig('New Rig')
 
 # Tests repair rig function for Hacker (exceptions and successful)
 def repair_rig():
-    # Tests repair without a rig
+    """
+    Tests rig repair for the Hacker class.
+
+    Tests:
+        - Attempting to repair rig without a rig present.
+        - Attempting to repair rig when rig is undamaged.
+        - Attempting to repair rig without an encrypted CryptoToken available.
+        - Successfully repairing a damaged rig using an unencrypted CryptoToken.
+
+    Expected behaviour:
+        - Hacker cannot perform rig repair without a rig.
+        - Repair action is blocked if the rig has no damage.
+        - Encrypted CryptoTokens cannot be used for rig repair.
+        - Upon successful repair, one CryptoToken is consumed, the rig's damage counter
+            resets to 0 and is no longer broken.
+    """
+    print("\n=== TEST: Repair of Rig by Hacker ===\n")
+
+    # --- Create hacker ---
     hacker = Hacker('Neo')
+
+    # --- Attempt repair without a rig ---
     hacker.repair_rig()
-    # Tests repair when rig is not damaged
+
+    # --- Attempt repair when rig is not damaged ---
     hacker.acquire_rig('Mah Rig')
     hacker.repair_rig()
-    # Tests repair without CryptoToken available
-    hacker.rig.damage_counter = 1
+
+    # --- Attempt repair of damaged rig without unencrypted CryptoToken available ---
+    hacker.rig.damage_counter = 2
+    hacker.rig.is_broken = True
+    asset = Asset('CryptoToken')
+    asset.is_encrypted = True
+    hacker.add_asset(asset)
+    print(hacker)
+    print(hacker.rig)
     hacker.repair_rig()
-    # Tests successful repair of rig
+
+    # --- Successful rig repair with unencrypted CryptoToken ---
     hacker.add_asset(Asset('CryptoToken'))
+    print(hacker)
     hacker.repair_rig()
+    print(hacker)
     print(hacker.rig)
 
-# Tests upgrade rig function for Hacker (exceptions and successful)
 def upgrade_rig():
-    # Tests upgrade without a rig
+    """
+    Tests rig upgrade for the Hacker class.
+
+    Tests:
+        - Attempting to upgrade rig without a rig present.
+        - Attempting to upgrade rig when maximum upgrade level (3) is already reached.
+        - Attempting to upgrade rig without an encrypted Hardware Patch available.
+        - Successfully upgrading a rig using an unencrypted Hardware Patch.
+
+    Expected behaviour:
+        - Hacker cannot perform rig upgrade without a rig.
+        - Upgrade action is blocked if the rig is already at maximum upgrade level (3).
+        - Encrypted Hardware Patches cannot be used for rig upgrades.
+        - Upon successful upgrade, one Hardware Patch is consumed and the rig's upgrade level increments by 1.
+    """
+    print("\n=== TEST: Upgrade of Rig by Hacker ===\n")
+
+    # --- Create hacker ---
     hacker = Hacker('Neo')
+
+    # --- Attempt upgrade without a rig ---
     hacker.upgrade_rig()
-    # Tests upgrade without Hardware Patch
-    hacker.acquire_rig('Mah Computer')
-    hacker.upgrade_rig()
-    # Tests upgrade when rig is already at maximum upgrade level
-    hacker.add_asset(Asset('Hardware Patch'))
+
+    # --- Attempt upgrade when rig is already at maximum level ---
+    hacker.acquire_rig('Mah Rig')
     hacker.rig.upgrade_level = 3
     hacker.upgrade_rig()
-    # Tests successful upgrade of rig
+
+    # --- Attempt upgrade without unencrypted Hardware Patch in inventory ---
     hacker.rig.upgrade_level = 0
+    asset = Asset('Hardware Patch')
+    asset.is_encrypted = True
+    hacker.add_asset(asset)
+    print(hacker)
     hacker.upgrade_rig()
+
+    # --- Successful rig upgrade with unencrypted Hardware Patch ---
+    hacker.add_asset(Asset('Hardware Patch'))
+    print(hacker)
+    hacker.upgrade_rig()
+    print(hacker)
     print(hacker.rig)
 
 # Tests encrypt asset function for Hacker (exceptions and successful)
@@ -603,9 +688,9 @@ def main():
 
     #create_set_display_hacker()
     #scan_add_remove_inventory()
-    acquire_rig()
+    #acquire_rig()
     #repair_rig()
-    #upgrade_rig()
+    upgrade_rig()
 
     #encrypt_asset()
     #decrypt_asset()

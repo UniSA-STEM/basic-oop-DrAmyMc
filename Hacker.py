@@ -164,7 +164,6 @@ class Hacker:
         if index is not None:
             del self.__inventory[index]
 
-# TODO: Need to consider encryption in this method!!!
     def acquire_rig(self, name):
         """
         Acquires a new rig in exchange for a CryptoToken from inventory.
@@ -181,8 +180,8 @@ class Hacker:
         required = 'CryptoToken'
         if self.rig is not None:
             print("You already have a rig!")
-        elif self.scan_inventory(required) is None:
-            print(f"You cannot acquire a rig - you need a {required} in your inventory.")
+        elif self.scan_inventory(required, True) is None:
+            print(f"You cannot acquire a rig - you need an unencrypted {required} in your inventory.")
         else:
             # Assigns Rig asset to rig attribute
             self.rig = Rig(name)
@@ -190,7 +189,6 @@ class Hacker:
             # Removes 'used' asset from inventory
             self.remove_asset(required)
 
-# TODO: Need to consider encryption in this method!!!
     def repair_rig(self):
         """
         Repairs all damage to the hacker's rig using a CryptoToken from inventory.
@@ -209,8 +207,8 @@ class Hacker:
         else:
             if self.rig.damage_counter == 0 and not self.rig.is_broken:
                 print("No repair is needed. Your rig is not damaged.")
-            elif self.scan_inventory(required) is None:
-                print(f"You cannot perform this repair - you need a {required} in your inventory.")
+            elif self.scan_inventory(required, True) is None:
+                print(f"You cannot perform this repair - you need an unencrypted {required} in your inventory.")
             else:
                 # Repairs damage to rig
                 self.rig.damage_counter = 0
@@ -219,7 +217,6 @@ class Hacker:
                 # Removes 'used' asset from inventory
                 self.remove_asset(required)
 
-# TODO: Need to consider encryption in this method!!!
     def upgrade_rig(self):
         """
         Upgrades the hacker's rig using a Hardware Patch from inventory.
@@ -237,12 +234,12 @@ class Hacker:
         else:
             if self.rig.upgrade_level == 3:
                 print("You cannot upgrade this rig - maximum upgrade level reached.")
-            elif self.scan_inventory(required) is None:
-                print(f"You cannot perform this upgrade - you need a {required} in your inventory.")
+            elif self.scan_inventory(required, True) is None:
+                print(f"You cannot perform this upgrade - you need an unencrypted {required} in your inventory.")
             else:
                 # Upgrades the rig
                 self.rig.upgrade_level += 1
-                print(f"Your rig has been upgraded to level {self.rig.upgrade_level}.\n")
+                print(f"Your rig has been upgraded to level {self.rig.upgrade_level}.")
                 # Removes 'used' asset from inventory
                 self.remove_asset(required)
 
