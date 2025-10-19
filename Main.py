@@ -692,7 +692,20 @@ def change_trace():
 
 def store_asset():
     """
-    Docstring here
+    Tests for store asset function by Hacker, covering all major conditions and edge cases.
+
+    Tests:
+        - Attempting to store assets while hacker is exposed.
+        - Attempting to store assets with no rig acquired.
+        - Attempting to store unavailable single asset.
+        - Attempting to store encrypted single asset.
+        - Storing available single asset.
+        - Storing all available assets.
+
+    Expected behaviours:
+        - Failed storage attempt if hacker exposed or no rig present.
+        - Failed storage attempt it single asset unavailable or encrypted.
+        - Available unencrypted assets are added to storage and removed from inventory.
     """
     print("\n=== TEST: Storage of Assets by Hacker ===\n")
 
@@ -724,7 +737,7 @@ def store_asset():
     print(hacker)
     print(hacker.rig)
 
-    # --- Transfer of single assets ---
+    # --- Storage of single assets ---
     hacker.store_asset('CryptoToken')       # Available for transfer
     hacker.store_asset('CryptoToken')       # Available for transfer
     hacker.store_asset('Security Chip')     # Available for transfer
@@ -733,23 +746,66 @@ def store_asset():
     print(hacker)
     print(hacker.rig)
 
-    # --- Transfer of all remaining assets and exposure threshold reached ---
+    # --- Storage of all remaining assets ---
     hacker.store_asset('all')
     print(hacker)
     print(hacker.rig)
 
 def retrieve_asset():
+    """
+    Tests for retrieve asset function by Hacker, covering all major conditions and edge cases.
+
+    Tests:
+        - Attempting to retrieve assets while hacker is exposed.
+        - Attempting to retrieve assets with no rig acquired.
+        - Attempting to retrieve unavailable single asset.
+        - Attempting to retrieve encrypted single asset.
+        - Retrieving available single asset.
+        - Retrieving all available assets.
+
+    Expected behaviours:
+        - Failed retrieval attempt if hacker exposed or no rig present.
+        - Failed retrieval attempt it single asset unavailable or encrypted.
+        - Available unencrypted assets are added to inventory and removed from storage.
+    """
+    print("\n=== TEST: Retrieval of Assets by Hacker ===\n")
+
+    # --- Create hacker ---
     hacker = Hacker('Neo')
+
+    # --- Attempt to store retrieve assets while exposed ---
+    hacker.is_exposed = True
+    hacker.retrieve_asset('all')
+
+    # --- Attempt to retrieve assets with no rig ---
+    hacker.is_exposed = False
+    hacker.store_asset('all')
+
+    # --- Acquire rig and add assets to storage ---
     hacker.acquire_rig('My Computer')
     hacker.rig.upgrade_level = 3
-    asset = Asset('CryptoToken')
+    hacker.rig.add_asset(Asset('CryptoToken'))
+    hacker.rig.add_asset(Asset('CryptoToken'))
+    hacker.rig.add_asset(Asset('CryptoToken'))
+    asset = Asset('Security Chip')
     asset.is_encrypted = True
-    asset2 = Asset('CryptoToken')
+    asset2 = Asset('Security Chip')
     asset2.is_encrypted = True
     hacker.rig.add_asset(asset)
     hacker.rig.add_asset(asset2)
     print(hacker)
     print(hacker.rig)
+
+    # --- Retrieval of single assets ---
+    hacker.retrieve_asset('CryptoToken')       # Available for transfer
+    hacker.retrieve_asset('CryptoToken')       # Available for transfer
+    hacker.retrieve_asset('Removable Drive')   # Available for transfer
+    hacker.retrieve_asset('Hardware Patch')    # Not available for transfer
+    hacker.retrieve_asset('Security Chip')     # Encrypted
+    print(hacker)
+    print(hacker.rig)
+
+    # --- Retrieval of all remaining assets ---
     hacker.retrieve_asset('all')
     print(hacker)
     print(hacker.rig)
@@ -792,8 +848,7 @@ def main():
 
     #encrypt_asset()
     #decrypt_asset()
-
-    change_trace()
+    #change_trace()
 
     #store_asset()
     #retrieve_asset()
