@@ -510,8 +510,26 @@ def upgrade_rig():
     print(hacker)
     print(hacker.rig)
 
-# Tests encrypt asset function for Hacker (exceptions and successful)
 def encrypt_asset():
+    """
+    Tests for encrypt asset function by Hacker, covering all major conditions and edge cases.
+
+    Tests:
+        - Attempting encryption when the hacker has no rig and no Security Chip in inventory.
+        - Attempting encryption when no Security Chip is available in inventory or storage.
+        - Attempting encryption when only encrypted Security Chips are available.
+        - Successful encryption of an asset from storage using Security Chip from storage.
+        - Successful encryption of an asset from inventory using Security Chip from inventory.
+        - Attempting encryption when only encrypted target assets remain.
+
+    Expected behaviour:
+        - Encryption should only occur if at least one unencrypted target asset and one
+            unencrypted Security Chip are available in either inventory or storage.
+        - The Security Chip used for encryption should be removed after successful encryption.
+        - Storage should be the preferred source over inventory for both target assets and
+            Security Chips if they are available in both places.
+    """
+    print("\n=== TEST: Encryption of Assets by Hacker ===\n")
 
     # --- Create hacker ---
     hacker = Hacker('Neo')
@@ -561,60 +579,142 @@ def encrypt_asset():
     print(hacker)
     print(hacker.rig)
 
-# Tests decrypt asset function for Hacker (exceptions and successful)
 def decrypt_asset():
-    # Tests decryption without Security Chip in inventory
+    """
+    Tests for decrypt asset function by Hacker, covering all major conditions and edge cases.
+
+    Tests:
+        - Attempting decryption when the hacker has no rig and no Security Chip in inventory.
+        - Attempting decryption when no Security Chip is available in inventory or storage.
+        - Attempting decryption when only encrypted Security Chips are available.
+        - Successful decryption of an asset from storage using Security Chip from storage.
+        - Successful decryption of an asset from inventory using Security Chip from inventory.
+        - Attempting decryption when only decrypted target assets remain.
+
+    Expected behaviour:
+        - Decryption should only occur if at least one encrypted target asset and one
+            unencrypted Security Chip are available in either inventory or storage.
+        - The Security Chip used for decryption should be removed after successful decryption.
+        - Storage should be the preferred source over inventory for both target assets and
+            Security Chips if they are available in both places.
+    """
+    print("\n=== TEST: Decryption of Assets by Hacker ===")
+
+    # --- Create hacker and add encrypted asset to inventory ---
     hacker = Hacker('Neo')
+    asset = Asset('CryptoToken')
+    asset.is_encrypted = True
+    hacker.add_asset(asset)
+    print(hacker)
+
+    # --- Attempt decryption without rig or Security Chip in inventory ---
     hacker.decrypt_asset('CryptoToken')
-    # Tests decryption without Security Chip in storage or inventory
+
+    # --- Acquire and upgrade rig ---
     hacker.acquire_rig('My Computer')
     hacker.rig.upgrade_level = 3
+
+    # --- Attempt decryption with no Security Chip in storage or inventory ---
     hacker.decrypt_asset('CryptoToken')
-    # Tests decryption of asset type not present in inventory or storage
+
+    # --- Attempt decryption with encrypted Security chips in storage and inventory ---
+    asset1 = Asset('Security Chip')
+    asset2 = Asset('Security Chip')
+    asset1.is_encrypted = True
+    asset2.is_encrypted = True
+    hacker.add_asset(asset1)
+    hacker.rig.add_asset(asset2)
+    hacker.decrypt_asset('CryptoToken')
+
+    # --- Add assets to inventory and storage for testing and display contents ---
     hacker.add_asset(Asset('Security Chip'))
-    hacker.decrypt_asset('CryptoToken')
-    # Tests successful decryption of asset in inventory with Security Chip in inventory
-    asset = Asset('CryptoToken')
-    asset.is_encrypted = True
-    hacker.add_asset(asset)
-    print(hacker)
-    hacker.decrypt_asset('CryptoToken')
-    print(hacker)
-    # Tests successful decryption of asset in inventory with Security Chip in storage
+    hacker.add_asset(Asset('Security Chip'))
     hacker.rig.add_asset(Asset('Security Chip'))
-    asset = Asset('CryptoToken')
-    asset.is_encrypted = True
-    hacker.add_asset(asset)
+    hacker.add_asset(Asset('CryptoToken'))
+    asset3 = Asset('CryptoToken')
+    asset3.is_encrypted = True
+    hacker.rig.add_asset(asset3)
     print(hacker)
+    print(hacker.rig)
+
+    # --- Successful decryption with target asset from storage and Security Chip from storage ---
     hacker.decrypt_asset('CryptoToken')
     print(hacker)
-    # Tests successful decryption of asset in storage with Security Chip in inventory
-    hacker.add_asset(Asset('Security Chip'))
-    asset = Asset('CryptoToken')
-    asset.is_encrypted = True
-    hacker.rig.add_asset(asset)
     print(hacker.rig)
+
+    # --- Successful decryption with target asset from inventory and Security Chip from inventory ---
     hacker.decrypt_asset('CryptoToken')
+    print(hacker)
     print(hacker.rig)
-    # Tests successful decryption of asset in storage with Security Chip in storage
-    hacker.rig.add_asset(Asset('Security Chip'))
-    asset = Asset('CryptoToken')
-    asset.is_encrypted = True
-    hacker.rig.add_asset(asset)
-    print(hacker.rig)
+
+    # --- Attempt decryption with no encrypted target assets available ---
     hacker.decrypt_asset('CryptoToken')
+    print(hacker)
     print(hacker.rig)
-    # Tests decryption of asset when already decrypted
-    hacker.add_asset(Asset('Security Chip'))
-    hacker.decrypt_asset('CryptoToken')
-    hacker.decrypt_asset('Data Spike')
+
+def change_trace():
+    """
+    Direct tests for increasing and reducing trace and associated exposure for Hacker.
+
+    Tests:
+        - Increasing trace level by a specified amount.
+        - Reducing trace level.
+
+    Expected behaviour:
+        - Trace level will increase by amount specified. If trace level >= 5, the hacker becomes exposed.
+        - Reduce trace function will reduce trace level by 1 each time it is called.
+        - When trace level falls below 5, the hacker is no longer exposed.
+        - Trace cannot be reduced below 0.
+    """
+    print("\n=== TEST: Increase and Reduce Hacker's Trace Level and Corresponding Exposure ===\n")
+
+    # --- Create hacker ---
+    hacker = Hacker('Neo')
+
+    # --- Directly increase hacker's trace level until exposed ---
+    hacker.increase_trace(1)
+    hacker.increase_trace(2)
+    hacker.increase_trace(2)
+    print(hacker)
+
+    # --- Reduce hacker's trace level and change exposure ---
+    hacker.reduce_trace()
+    print(hacker)
+
+    # --- Continue to reduce hacker's trace level ---
+    hacker.reduce_trace()
+    hacker.reduce_trace()
+    hacker.reduce_trace()
+    hacker.reduce_trace()
+
+    # --- Attempt to reduce trace level below 0 ---
+    hacker.reduce_trace()
 
 def store_asset():
+    """
+    Docstring here
+    """
+    print("\n=== TEST: Storage of Assets by Hacker ===\n")
+
+    # --- Create hacker ---
     hacker = Hacker('Neo')
+
+    # --- Attempt to store assets while exposed ---
+    hacker.is_exposed = True
+    hacker.store_asset('all')
+
+    # --- Attempt to store assets with no rig ---
+    hacker.is_exposed = False
+    hacker.store_asset('all')
+
+    # --- Acquire rig and add assets to inventory ---
     hacker.acquire_rig('My Computer')
+    hacker.rig.upgrade_level = 3
     hacker.add_asset(Asset('CryptoToken'))
     hacker.add_asset(Asset('CryptoToken'))
     hacker.add_asset(Asset('CryptoToken'))
+    hacker.add_asset(Asset('Security Chip'))
+    hacker.add_asset(Asset('Security Chip'))
     asset = Asset('Data Spike')
     asset.is_encrypted = True
     asset2 = Asset('Data Spike')
@@ -623,10 +723,17 @@ def store_asset():
     hacker.add_asset(asset2)
     print(hacker)
     print(hacker.rig)
-    hacker.store_asset('all')
+
+    # --- Transfer of single assets ---
+    hacker.store_asset('CryptoToken')       # Available for transfer
+    hacker.store_asset('CryptoToken')       # Available for transfer
+    hacker.store_asset('Security Chip')     # Available for transfer
+    hacker.store_asset('Removable Drive')   # Not available in inventory
+    hacker.store_asset('Data Spike')        # Encrypted
     print(hacker)
     print(hacker.rig)
-    hacker.rig.upgrade_level = 3
+
+    # --- Transfer of all remaining assets and exposure threshold reached ---
     hacker.store_asset('all')
     print(hacker)
     print(hacker.rig)
@@ -666,16 +773,6 @@ def launch_attack():
 def extract_assets():
     pass
 
-# Tests reduce trace function
-def reduce_trace():
-    # Tests successful reduction of trace level
-    hacker = Hacker('Neo')
-    hacker.trace_level = 3
-    hacker.reduce_trace()
-    hacker.reduce_trace()
-    hacker.reduce_trace()
-    # Tests attempt to reduce trace level below 0
-    hacker.reduce_trace()
 
 # Runs testing functions for program
 def main():
@@ -693,13 +790,16 @@ def main():
     #repair_rig()
     #upgrade_rig()
 
-    encrypt_asset()
+    #encrypt_asset()
     #decrypt_asset()
+
+    change_trace()
+
     #store_asset()
     #retrieve_asset()
 
     #launch_attack()
     #extract_assets()
-    #reduce_trace()
+
 
 main()

@@ -146,7 +146,8 @@ class Rig:
                     if not item.is_encrypted:
                         item_index = self.storage.index(item)
                 else:
-                    item_index = self.storage.index(item)
+                    if item.is_encrypted:
+                        item_index = self.storage.index(item)
         return item_index
 
     def add_asset(self, asset):
