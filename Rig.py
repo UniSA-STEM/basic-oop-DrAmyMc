@@ -8,7 +8,7 @@ This is my own work as defined by the University's Academic Misconduct Policy.
 
 Game parameters:
 Upgrade levels: 0 (start)   1       2       3 (max)
-Damage taken:   1 (start)   0.75    0.5     0.25
+Damage taken:   1 (start)   0.7    0.5     0.4
 Storage size:   4 (start)   6       8       10
 """
 
@@ -188,6 +188,17 @@ class Rig:
         else:
             print("Your rig cannot generate an asset while broken. Repair your rig!")
 
+    def repair_rig(self):
+        """Repairs rig by setting damage_counter to 0 and is_broken state to false."""
+        self.damage_counter = 0
+        self.is_broken = False
+        print(f"Your rig has been repaired and restored to pristine condition.")
+
+    def upgrade_rig(self):
+        """Upgrades rig by incrementing the upgrade_level by 1"""
+        self.upgrade_level += 1
+        print(f"Your rig has been upgraded to level {self.upgrade_level}.")
+
     def take_hit(self):
         """
         Records damage taken from an attack.
@@ -195,7 +206,7 @@ class Rig:
         Damage increases the rig's 'damage_counter' based on its upgrade level.
         Once the damage counter reaches or exceeds 2, the rig becomes broken.
         """
-        hit_damage = [1, 0.75, 0.5, 0.25][self.upgrade_level]
+        hit_damage = [1, 0.7, 0.5, 0.4][self.upgrade_level]
         self.damage_counter += hit_damage
         print(f"{self.name}, you have been hit! Your damage is now {self.damage_counter}.")
 

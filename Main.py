@@ -215,9 +215,9 @@ def take_hit():
     Expected behaviour:
         - Each hit increases the rig's damage counter based on its current upgrade level.
             Level 0     +1.0 damage
-            Level 1     +0.75 damage
+            Level 1     +0.7 damage
             Level 2     +0.5 damage
-            Level 3     +0.25 damage
+            Level 3     +0.4 damage
         - When total damage reaches or exceeds 2.0, the rig becomes broken.
     """
 
@@ -239,7 +239,7 @@ def take_hit():
     # --- Create a new rig ---
     rig2 = Rig('Mah Better Computer')
 
-    # --- Upgrade rig to level 1 and take hit of damage 0.75 ---
+    # --- Upgrade rig to level 1 and take hit of damage 0.7 ---
     rig2.upgrade_level = 1
     rig2.take_hit()
 
@@ -247,10 +247,10 @@ def take_hit():
     rig2.upgrade_level = 2
     rig2.take_hit()
 
-    # --- Upgrade rig to level 3 and take hit of damage 0.25 ---
+    # --- Upgrade rig to level 3 and take hit of damage 0.4 ---
     rig2.upgrade_level = 3
     rig2.take_hit()
-    print("\n--- This rig should have total damage of 0.75 + 0.5 + 0.25 = 1.5 ---")
+    print("\n--- This rig should have total damage of 0.7 + 0.5 + 0.4 = 1.6 ---")
     print(rig2)
 
 
@@ -877,7 +877,7 @@ def launch_attack():
     hacker1.is_exposed = False
     hacker1.launch_attack(hacker2.rig)
 
-    # --- Attack with available data spikes ---
+    # --- Successful attack with available data spikes ---
     hacker1.acquire_rig('Neo Rig')
     hacker1.launch_attack(hacker2.rig)
     hacker1.launch_attack(hacker2.rig)

@@ -205,18 +205,15 @@ class Hacker:
         required = 'CryptoToken'
         if self.rig is None:
             print(f"You do not have a rig!")
+        elif self.rig.damage_counter == 0 and not self.rig.is_broken:
+            print("No repair is needed. Your rig is not damaged.")
+        elif self.scan_inventory(required, True) is None:
+            print(f"You cannot perform this repair - you need an unencrypted {required} in your inventory.")
         else:
-            if self.rig.damage_counter == 0 and not self.rig.is_broken:
-                print("No repair is needed. Your rig is not damaged.")
-            elif self.scan_inventory(required, True) is None:
-                print(f"You cannot perform this repair - you need an unencrypted {required} in your inventory.")
-            else:
-                # Repairs damage to rig
-                self.rig.damage_counter = 0
-                self.rig.is_broken = False
-                print(f"Your rig has been repaired and restored to pristine condition.")
-                # Removes 'used' asset from inventory
-                self.remove_asset(required)
+            # Repairs damage to rig
+            self.rig.repair_rig()
+            # Removes 'used' asset from inventory
+            self.remove_asset(required)
 
     def upgrade_rig(self):
         """
@@ -232,26 +229,29 @@ class Hacker:
         required = 'Hardware Patch'
         if self.rig is None:
             print(f"You do not have a rig!")
+        elif self.rig.upgrade_level == 3:
+            print("You cannot upgrade this rig - maximum upgrade level reached.")
+        elif self.scan_inventory(required, True) is None:
+            print(f"You cannot perform this upgrade - you need an unencrypted {required} in your inventory.")
         else:
-            if self.rig.upgrade_level == 3:
-                print("You cannot upgrade this rig - maximum upgrade level reached.")
-            elif self.scan_inventory(required, True) is None:
-                print(f"You cannot perform this upgrade - you need an unencrypted {required} in your inventory.")
-            else:
-                # Upgrades the rig
-                self.rig.upgrade_level += 1
-                print(f"Your rig has been upgraded to level {self.rig.upgrade_level}.")
-                # Removes 'used' asset from inventory
-                self.remove_asset(required)
+            # Upgrades the rig
+            self.rig.upgrade_rig()
+            # Removes 'used' asset from inventory
+            self.remove_asset(required)
 
     def scan_both(self, asset_name, unsecured):
+        # Scans storage IF a rig is present
         if self.rig is not None:
             index_storage = self.rig.scan_storage(asset_name, unsecured)
             in_storage = False if index_storage is None else True
         else:
             in_storage = False
+
+        # Scans inventory
         index_inventory = self.scan_inventory(asset_name, unsecured)
         in_inventory = False if index_inventory is None else True
+
+        # Returns storage as a first preference if item found in both
         if not in_storage and not in_inventory:
             return None
         elif in_storage:
@@ -352,9 +352,9 @@ class Hacker:
         """
         if self.trace_level > 0:
             self.trace_level -= 1
+            print(f"You have laid low and reduced your trace. Your trace level is now {self.trace_level}.")
             if self.trace_level < 5:
                 self.is_exposed = False
-                print(f"You have laid low and reduced your trace. Your trace level is now {self.trace_level}.")
         else:
             print("Your trace level is already 0, you cannot reduce your trace further.")
 
