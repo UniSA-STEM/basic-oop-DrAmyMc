@@ -447,19 +447,24 @@ class Hacker:
         Args:
             target_rig(Rig): The rig being attacked.
         """
+        required = 'Data Spike'
+        # Ensures hacker isn't exposed before proceeding
         if self.is_exposed:
             print("You cannot launch a data spike while exposed. Reduce your exposure level.")
+        # Ensures hacker is equipped with a rig before proceeding
+        elif self.rig is None:
+            print("You cannot launch an attack - you do not have a rig.")
+        # Ensures hacker has an unencrypted Data Spike available in storage before proceeding
+        elif self.rig.scan_storage(required, True) is None:
+            print(f"You cannot launch an attack - you need an unencrypted {required} in your rig's storage.")
         else:
-            required = 'Data Spike'
-            if self.rig is None:
-                print("You cannot launch an attack - you do not have a rig.")
-            elif self.rig.scan_storage(required, True) is None:
-                print(f"You cannot launch an attack - you need an unencrypted {required} in your rig's storage.")
-            else:
-                self.rig.remove_asset(required)
-                print(f"Congratulations, {self.name}! You have hit the target rig, {target_rig.name}.")
-                self.increase_trace(1)
-                target_rig.take_hit()
+            # Remove 'used' data spike from storage
+            self.rig.remove_asset(required)
+            # Hacker hits rig and increases trace
+            print(f"Congratulations, {self.name}! You have hit the target rig, {target_rig.name}.")
+            self.increase_trace(1)
+            # Target rig receives damage
+            target_rig.take_hit()
 
     def extract_assets(self, target_rig):
         """
@@ -478,24 +483,30 @@ class Hacker:
         Args:
             target_rig (Rig): The broken rig from which assets are to be extracted.
         """
+        required = 'Removable Drive'
+        # Ensures hacker isn't exposed before proceeding
         if self.is_exposed:
             print("You cannot extract assets while exposed. Reduce your exposure level.")
+        # Ensures hacker is equipped with a rig before proceeding
+        elif self.rig is None:
+            print("You cannot extract assets - you do not have a rig.")
+        # Ensures target_rig is broken and assets are available for extraction
+        elif not target_rig.is_broken:
+            print(f"You cannot extract assets from this rig - it is not broken!")
+        # Ensures hacker has an unencrypted Removable Drive available in storage before proceeding
+        elif self.rig.scan_storage(required, True) is None:
+            print(f"You cannot extract assets - you need an unencrypted {required} in your rig's storage.")
         else:
-            required = 'Removable Drive'
-            if self.rig is None:
-                print("You cannot extract assets - you do not have a rig.")
-            elif self.rig.scan_storage(required, True) is None:
-                print(f"You cannot extract assets - you need an unencrypted {required} in your rig's storage.")
-            elif not target_rig.is_broken:
-                print(f"You cannot extract assets from this rig - it is not broken!")
-            else:
-                for item in list(target_rig.storage):
-                    if not item.is_encrypted:
-                        self.add_asset(item)
-                        target_rig.remove_asset(item.name)
-                self.rig.remove_asset(required)
-                print(f"Congratulations, {self.name}! You have extracted the unsecured assets from the target rig.")
-                self.increase_trace(1)
+            # Move all unencrypted items from target rig's storage to hacker's inventory
+            for item in list(target_rig.storage):
+                if not item.is_encrypted:
+                    self.add_asset(item)
+                    target_rig.remove_asset(item.name)
+            print(f"Congratulations, {self.name}! You have extracted the unsecured assets from the target rig.")
+            # Remove 'used' removable drive from storage
+            self.rig.remove_asset(required)
+            # Increase trace
+            self.increase_trace(1)
 
     def __str__(self):
         """

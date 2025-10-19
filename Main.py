@@ -811,50 +811,140 @@ def retrieve_asset():
     print(hacker.rig)
 
 def launch_attack():
+    """
+    Tests for launch attack function by Hacker, covering all major conditions and edge cases.
+
+    Tests:
+        - Attempting to launch attack while hacker is exposed.
+        - Attempting to launch attack with no rig acquired.
+        - Attempting to launch attack with no unencrypted Data Spike in storage.
+        - Launching available Data Spike.
+
+    Expected behaviours:
+        - Failed attack attempt if hacker exposed or no rig present.
+        - Failed attack attempt if no unencrypted Data Spike available in storage.
+        - Successful attack initiates take_hit function in target rig, increases hacker's trace level, and
+            consumes Data Spike from storage.
+    """
+    print("\n=== TEST: Launch Attack at Rival Hacker ===\n")
+
+    # --- Create hacker and rival hacker with rig ---
     hacker1 = Hacker('Neo')
     hacker2 = Hacker('Bad Guy')
-    hacker1.acquire_rig('Neo Rig')
     hacker2.acquire_rig('BadGuy Rig')
+
+    # --- Attempt attack while exposed ---
+    hacker1.is_exposed = True
+    hacker1.launch_attack(hacker2.rig)
+
+    # --- Attempt attack with no rig ---
+    hacker1.is_exposed = False
+    hacker1.launch_attack(hacker2.rig)
+
+    # --- Attack with available data spikes ---
+    hacker1.acquire_rig('Neo Rig')
     hacker1.launch_attack(hacker2.rig)
     hacker1.launch_attack(hacker2.rig)
-    # Test an attack without a data spike
-    hacker1.launch_attack(hacker2.rig)
-    # Extract assets from broken rig
-    hacker1.extract_assets(hacker2.rig)
-    print(hacker1)
+
+    # --- Attempt attack with no unencrypted data spikes available ---
+    asset = Asset('Data Spike')
+    asset.is_encrypted = True
+    hacker1.rig.add_asset(asset)
     print(hacker1.rig)
-    print(hacker2)
-    print(hacker2.rig)
+    hacker1.launch_attack(hacker2.rig)
 
 def extract_assets():
-    pass
+    """
+    Tests for extract assets function by Hacker, covering all major conditions and edge cases.
 
+    Tests:
+        - Attempting to extract assets while hacker is exposed.
+        - Attempting to extract assets with no rig acquired.
+        - Attempting to extract assets from unbroken rig.
+        - Attempting to extract assets with no unencrypted Removable Drive in storage.
+        - Extraction of all unencrypted assets from target rig's storage to hacker's inventory.
+
+    Expected behaviours:
+        - Failed extraction attempt if hacker exposed or no rig present.
+        - Failed extraction attempt if target rig unbroken.
+        - Failed extraction attempt if unencrypted Removable Drive not present in storage.
+        - With successful extraciton, all unencrypted assets are transferred from the target rig's storage to the
+            hacker's inventory and the hacker's Removable Drive is consumed (removed from storage).
+    """
+    print("\n=== TEST: Extract Assets from Rival Hacker ===\n")
+
+    # --- Create hacker and rival hacker with rig ---
+    hacker1 = Hacker('Neo')
+    hacker2 = Hacker('Bad Guy')
+    hacker2.acquire_rig('BadGuy Rig')
+
+    # --- Attempt extraction while exposed ---
+    hacker1.is_exposed = True
+    hacker1.extract_assets(hacker2.rig)
+
+    # --- Attempt extraction with no rig ---
+    hacker1.is_exposed = False
+    hacker1.extract_assets(hacker2.rig)
+
+    # --- Attempt extraction from unbroken rig ---
+    hacker1.acquire_rig('Neo Rig')
+    hacker1.extract_assets(hacker2.rig)
+
+    # --- Set rival rig to broken with mix of encrypted and unencrypted assets ---
+    hacker2.rig.is_broken = True
+    asset = Asset('Removable Drive')
+    asset.is_encrypted = True
+    hacker2.rig.add_asset(asset)
+    print(hacker2.rig)
+
+    # --- Attempt extraction without unencrypted Removable Drive available ---
+    hacker1.rig.remove_asset('Removable Drive')
+    asset = Asset('Removable Drive')
+    asset.is_encrypted = True
+    hacker1.rig.add_asset(asset)
+    print(hacker1.rig)
+    hacker1.extract_assets(hacker2.rig)
+
+    # --- Successful extraction ---
+    hacker1.rig.add_asset(Asset('Removable Drive'))
+    print(hacker1.rig)
+    hacker1.extract_assets(hacker2.rig)
+    print(hacker1)
+    print(hacker2.rig)
 
 # Runs testing functions for program
 def main():
-    #create_set_display_assets()
+    """Calls all the test functions"""
 
-    #create_set_display_rig()
-    #scan_add_remove_storage()
-    #generate_asset()
-    #take_hit()
-    #show_condition()
+    # --- Testing asset class ---
+    create_set_display_assets()
 
-    #create_set_display_hacker()
-    #scan_add_remove_inventory()
-    #acquire_rig()
-    #repair_rig()
-    #upgrade_rig()
+    # --- Testing rig class ---
+    create_set_display_rig()
+    scan_add_remove_storage()
+    generate_asset()
+    take_hit()
+    show_condition()
 
-    #encrypt_asset()
-    #decrypt_asset()
-    #change_trace()
+    # --- Testing hacker class: basics ---
+    create_set_display_hacker()
+    scan_add_remove_inventory()
 
-    #store_asset()
-    #retrieve_asset()
+    # --- Testing hacker class: rig functions ---
+    acquire_rig()
+    repair_rig()
+    upgrade_rig()
 
-    #launch_attack()
-    #extract_assets()
+    # --- Testing hacker class: encryption functions ---
+    encrypt_asset()
+    decrypt_asset()
 
+    # --- Testing hacker class: risky functions
+    change_trace()
+    store_asset()
+    retrieve_asset()
+    launch_attack()
+    extract_assets()
 
+# Call main function to run tests
 main()
