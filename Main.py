@@ -17,18 +17,18 @@ def create_set_display_assets():
     Direct tests for the Asset class for asset creation, setting attributes, and string display.
 
     Tests:
-     - Creation of valid asset types.
-     - Handling of invalid asset types.
-     - Changing the name (type) of asset manually.
-     - Setting encryption status manually.
-     - Displaying string representations.
+        - Creation of valid asset types.
+        - Handling of invalid asset types.
+        - Changing the name (type) of asset manually.
+        - Setting encryption status manually.
+        - Displaying string representations.
 
      Expected behaviour:
-     - Valid asset types should be created successfully.
-     - Invalid asset types should not be created (prints warning, returns None).
-     - Valid name change should set new name and description successfully.
-     - Invalid name change should be unsuccessful.
-     - Encrypted assets should display 'Encrypted' status in their string output.
+        - Valid asset types should be created successfully.
+        - Invalid asset types should not be created (prints warning, returns None).
+        - Valid name change should set new name and description successfully.
+        - Invalid name change should be unsuccessful.
+        - Encrypted assets should display 'Encrypted' status in their string output.
     """
     print("\n=== TEST: Create, Modify and Display Assets ===\n")
 
@@ -61,17 +61,17 @@ def create_set_display_assets():
 
 def create_set_display_rig():
     """
-        Direct tests for the Rig class for rig creation, setting attributes and string display.
+    Direct tests for the Rig class for rig creation, setting attributes and string display.
 
-        Tests:
-         - Creation of a rig instance.
-         - Changing name, damager_counter, is_broken, and upgrade_level manually.
-         - Displaying string representations.
+    Tests:
+        - Creation of a rig instance.
+        - Changing name, damager_counter, is_broken, and upgrade_level manually.
+        - Displaying string representations.
 
-         Expected behaviour:
-         - Rig should be created successfully.
-         - Valid changes should be applied and displayed in string representation.
-         - Invalid changes should not be applied and string representation should be displayed unchanged.
+     Expected behaviour:
+        - Rig should be created successfully.
+        - Valid changes should be applied and displayed in string representation.
+        - Invalid changes should not be applied and string representation should be displayed unchanged.
     """
     print("\n=== TEST: Create, Modify and Display Rig ===\n")
 
@@ -105,13 +105,13 @@ def scan_add_remove_storage():
     Direct tests for the Rig class for adding and removing assets from storage.
 
     Tests:
-     - Adding assets (valid and invalid) to a rig's storage.
-     - Removing assets (valid, invalid, and encrypted) from a rig's storage.
+        - Adding assets (valid and invalid) to a rig's storage.
+        - Removing assets (valid, invalid, and encrypted) from a rig's storage.
 
      Expected behaviour:
-     - Valid assets should be successfully added and removed from storage.
-     - Invalid assets should not be added or removed from storage.
-     - Encrypted assets should not be removed from storage.
+        - Valid assets should be successfully added and removed from storage.
+        - Invalid assets should not be added or removed from storage.
+        - Encrypted assets should not be removed from storage.
 
      Notes:
          - scan_storage function indirectly tested via its utilisation in remove_asset function.
@@ -156,7 +156,7 @@ def generate_asset():
 
      Expected behaviour:
         - Randomly generated assets should be successfully added to the rig's storage if the maximum storage
-        limit is not exceeded.
+            limit is not exceeded.
         - Maximum storage limit will change from 4 to 6 to 8 to 10 items in line with upgrade levels of 0, 1, 2 and 3.
         - Error message will display if rig is broken and no asset will be generated.
     """
@@ -308,14 +308,14 @@ def create_set_display_hacker():
     Direct tests for the Hacker class for hacker creation, setting attributes and string display.
 
     Tests:
-     - Creation of a hacker instance.
-     - Changing name, rig, trace_level, and is_exposed manually.
-     - Displaying string representations.
+        - Creation of a hacker instance.
+        - Changing name, rig, trace_level, and is_exposed manually.
+        - Displaying string representations.
 
      Expected behaviour:
-     - Hacker should be created successfully.
-     - Valid changes should be applied and displayed in string representation.
-     - Invalid changes should not be applied and string representation should be displayed unchanged.
+        - Hacker should be created successfully.
+        - Valid changes should be applied and displayed in string representation.
+        - Invalid changes should not be applied and string representation should be displayed unchanged.
     """
     print("\n=== TEST: Create, Modify and Display Hacker ===\n")
 
@@ -395,7 +395,7 @@ def acquire_rig():
         - Attempting rig acquisition without a CryptoToken in inventory.
         - Attempting rig acquisition with an encrypted CryptoToken in inventory.
         - Successful rig acquisition using an unencrypted CryptoToken.
-        - Attmeping to acquire an additional rig when one is already owned.
+        - Attempting to acquire an additional rig when one is already owned.
 
     Expected behaviour:
         - Hacker cannot acquire a rig without an unencrypted CryptoToken.
@@ -755,12 +755,12 @@ def store_asset():
     print(hacker.rig)
 
     # --- Storage of single assets ---
-    hacker.store_asset('CryptoToken')       # Available for transfer
-    hacker.store_asset('CryptoToken')       # Available for transfer
-    hacker.store_asset('Removable Drive')   # Not available in inventory
-    hacker.store_asset('Data Spike')        # Encrypted
-    hacker.store_asset('Security Chip')     # Available for transfer
-    hacker.store_asset('CryptoToken')       # Available, but no storage space left
+    hacker.store_asset('CryptoToken')  # Available for transfer
+    hacker.store_asset('CryptoToken')  # Available for transfer
+    hacker.store_asset('Removable Drive')  # Not available in inventory
+    hacker.store_asset('Data Spike')  # Encrypted
+    hacker.store_asset('Security Chip')  # Available for transfer
+    hacker.store_asset('CryptoToken')  # Available, but no storage space left
     print(hacker)
     print(hacker.rig)
 
@@ -784,6 +784,7 @@ def store_asset():
     hacker.store_asset('all')
     print(hacker)
     print(hacker.rig)
+
 
 def retrieve_asset():
     """
@@ -904,7 +905,7 @@ def extract_assets():
         - Failed extraction attempt if hacker exposed or no rig present.
         - Failed extraction attempt if target rig unbroken.
         - Failed extraction attempt if unencrypted Removable Drive not present in storage.
-        - With successful extraciton, all unencrypted assets are transferred from the target rig's storage to the
+        - With successful extraction, all unencrypted assets are transferred from the target rig's storage to the
             hacker's inventory and the hacker's Removable Drive is consumed (removed from storage).
     """
     print("\n=== TEST: Extract Assets from Rival Hacker ===\n")
@@ -949,39 +950,38 @@ def extract_assets():
     print(hacker2.rig)
 
 
-# Runs testing functions for program
 def main():
     """Calls all the test functions"""
 
     # --- Testing asset class ---
-    # create_set_display_assets()
+    create_set_display_assets()
 
     # --- Testing rig class ---
-    # create_set_display_rig()
-    # scan_add_remove_storage()
-    # generate_asset()
-    # take_hit()
-    # show_condition()
+    create_set_display_rig()
+    scan_add_remove_storage()
+    generate_asset()
+    take_hit()
+    show_condition()
 
     # --- Testing hacker class: basics ---
-    # create_set_display_hacker()
-    # scan_add_remove_inventory()
+    create_set_display_hacker()
+    scan_add_remove_inventory()
 
     # --- Testing hacker class: rig functions ---
-    # acquire_rig()
-    # repair_rig()
-    # upgrade_rig()
+    acquire_rig()
+    repair_rig()
+    upgrade_rig()
 
     # --- Testing hacker class: encryption functions ---
-    # encrypt_asset()
-    # decrypt_asset()
+    encrypt_asset()
+    decrypt_asset()
 
     # --- Testing hacker class: risky functions
-    # change_trace()
+    change_trace()
     store_asset()
-    # retrieve_asset()
-    # launch_attack()
-    # extract_assets()
+    retrieve_asset()
+    launch_attack()
+    extract_assets()
 
 
 # Call main function to run tests

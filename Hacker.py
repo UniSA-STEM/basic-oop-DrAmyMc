@@ -53,7 +53,7 @@ class Hacker:
         return self.__rig
 
     def get_inventory(self):
-        "Returns a list of Asset objects representing the hacker's inventory."
+        """Returns a list of Asset objects representing the hacker's inventory."""
         return self.__inventory
 
     def get_trace_level(self):
@@ -214,7 +214,7 @@ class Hacker:
                 # Repairs damage to rig
                 self.rig.damage_counter = 0
                 self.rig.is_broken = False
-                print(f"Your rig has been repaired and restored to pristine condition.\n")
+                print(f"Your rig has been repaired and restored to pristine condition.")
                 # Removes 'used' asset from inventory
                 self.remove_asset(required)
 
@@ -279,12 +279,13 @@ class Hacker:
             print(f"You cannot perform this encryption - you need an unencrypted {required} in your"
                   f" storage or inventory.")
         else:
+            target_asset = self.scan_both(asset_name, True)
             # Ensures an unencrypted target asset exists in storage or inventory before proceeding
-            if self.scan_both(asset_name, True) is None:
+            if target_asset is None:
                 print(f"You do not have an unencrypted {asset_name} in your storage or inventory to encrypt.")
             else:
                 # Encrypts the requested asset
-                self.scan_both(asset_name, True).is_encrypted = True
+                target_asset.is_encrypted = True
                 print(f"Your {asset_name} has now been encrypted.")
                 # Removes 'used' Security Chip from storage or inventory
                 if self.rig.scan_storage(required, True) is not None:
@@ -312,12 +313,13 @@ class Hacker:
             print(f"You cannot perform this decryption - you need an unencrypted {required} in your"
                   f" storage or inventory.")
         else:
+            target_asset = self.scan_both(asset_name, False)
             # Ensures an encrypted target asset exists in storage or inventory before proceeding
-            if self.scan_both(asset_name, False) is None:
+            if target_asset is None:
                 print(f"You do not have an encrypted {asset_name} in your storage or inventory to decrypt.")
             else:
                 # Decrypts the requested asset
-                self.scan_both(asset_name, False).is_encrypted = False
+                target_asset.is_encrypted = False
                 print(f"Your {asset_name} has now been decrypted.")
                 # Removes 'used' Security Chip from storage or inventory
                 if self.rig.scan_storage(required, True) is not None:
@@ -354,9 +356,8 @@ class Hacker:
                 self.is_exposed = False
                 print(f"You have laid low and reduced your trace. Your trace level is now {self.trace_level}.")
         else:
-            print("Your trace level is already 0, you cannot reduce your trace further.\n")
+            print("Your trace level is already 0, you cannot reduce your trace further.")
 
-    # TODO: If storage is full - need to STOP moving assets, and if no assets to move, need error message
     def store_asset(self, asset_name):
         """
         Moves a specific asset (or all assets) FROM the hacker's inventory TO the rig's storage.
@@ -378,7 +379,7 @@ class Hacker:
         else:
             max_storage = [4, 6, 8, 10][self.rig.upgrade_level]
             space = max_storage - len(self.rig.storage)
-            # Ensures storages is not full before initiating transfer
+            # Ensures storage is not full before initiating transfer
             if space == 0:
                 print(f"You cannot store another asset - maximum storage is reached. Upgrade your rig.")
             else:
@@ -396,6 +397,7 @@ class Hacker:
                         else:
                             print("You have completed a partial transfer of assets to storage. "
                                   "Your rig's storage is now full.")
+                        # Increases trace
                         self.increase_trace(2)
                 # If not all, ensures unencrypted individual asset exists before initiating storage
                 elif self.scan_inventory(asset_name, True) is None:
@@ -428,7 +430,7 @@ class Hacker:
         # Initiates retrieval of all unencrypted assets if 'all' passed as asset name
         elif asset_name == 'all':
             for item in list(self.rig.storage):
-                if item.is_encrypted == False:
+                if not item.is_encrypted:
                     self.add_asset(item)
                     self.rig.remove_asset(item.name)
             print("You have retrieved all unencrypted assets from storage.")

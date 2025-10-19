@@ -21,7 +21,7 @@ class Asset:
     type_list = ['CryptoToken', 'Data Spike', 'Removable Drive', 'Security Chip', 'Hardware Patch']
 
     # Corresponding descriptions for each asset type
-    description_list = ['Use to acquire or repair rigs.', 'Used in battles.', 'Used for extraction.',
+    description_list = ['Used to acquire or repair rigs.', 'Used in battles.', 'Used for extraction.',
                         'Used to encrypt or decrypt assets.', 'Used to upgrade rigs.']
 
     def __new__(cls, name):
@@ -52,7 +52,7 @@ class Asset:
         Initialises a new Asset instance.
 
         Args:
-            name (str): The name (tyoe) of the asset, which must exist in 'type_list'.
+            name (str): The name (type) of the asset, which must exist in 'type_list'.
 
         Attributes:
             __name (str): The asset's name (type).
