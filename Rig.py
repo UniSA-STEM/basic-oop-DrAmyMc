@@ -170,9 +170,16 @@ class Rig:
             del self.__storage[index]
 
     def generate_asset(self):
-        """Generates a random asset and adds it to storage."""
-        asset = Asset(random.choice(Asset.type_list))
-        self.add_asset(asset)
+        """
+        Generates a random asset and adds it to storage.
+
+        Displays error message if rig is broken.
+        """
+        if not self.is_broken:
+            asset = Asset(random.choice(Asset.type_list))
+            self.add_asset(asset)
+        else:
+            print("Your rig cannot generate an asset while broken. Repair your rig!")
 
     def take_hit(self):
         """
@@ -196,11 +203,11 @@ class Rig:
         Returns:
             str: The condition summary (e.g. "Pristine", "Partially Damaged").
         """
-        if self.damage_counter == 0:
+        if not self.is_broken and self.damage_counter == 0:
             condition = "Pristine"
-        elif self.damage_counter < 1:
+        elif not self.is_broken and self.damage_counter < 1:
             condition = "Partially Damaged"
-        elif self.damage_counter < 2:
+        elif not self.is_broken and self.damage_counter < 2:
             condition = "Heavily Damaged"
         else:
             condition = "Broken"

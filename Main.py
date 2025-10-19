@@ -139,8 +139,6 @@ def scan_add_remove_storage():
     print("--- This rig should now have only one Data Spike left in storage ---")
     print(rig)
 
-
-# Tests random asset generate function for rig along with add_asset function
 def generate_asset():
     """
         Direct tests for the Rig class for random asset generation and storage size limits.
@@ -148,18 +146,27 @@ def generate_asset():
         Tests:
          - Generating random assets and adding them to the rig's storage.
          - Maximum storage limit for asset varying based on upgrade level of rig.
+         - Attempting to generate an asset while rig is broken.
 
          Expected behaviour:
          - Randomly generated assets should be successfully added to the rig's storage if the maximum storage
             limit is not exceeded.
          - Maximum storage limit will change from 4 to 6 to 8 to 10 items in line with upgrade levels of 0, 1, 2 and 3.
+         - Error message will display if rig is broken and no asset will be generated.
         """
     print("\n=== TEST: Generate Random Asset and Check Maximum Storage Limits ===\n")
 
     # --- Create rig ---
     rig = Rig('Mah Computer')
 
+    # --- Test asset generation while rig is broken ---
+    rig.is_broken = True
+    rig.generate_asset()
+    print("\n--- This rig should only have the default 3 starting assets ---")
+    print(rig)
+
     # --- Test asset generation for Level 0 rig - max items 4 ---
+    rig.is_broken = False
     rig.generate_asset()    # 4th item in storage
     rig.generate_asset()    # Limit exceeded - will not add
     print("\n--- This level 0 rig should have 4 items in storage ---")
@@ -189,39 +196,142 @@ def generate_asset():
     print("\n--- This level 3 rig should have 10 items in storage ---")
     print(rig)
 
-# Tests rig taking a hit, reaching broken state, and different damage levels base on upgrade level
 def take_hit():
+    """
+    Direct tests for the Rig class for taking damage and determining broken state.
+
+    Tests:
+        - Rig taking hits at different upgrade levels.
+        - Damage scaling according to rig upgrade level.
+        - Rig becoming broken when damage reaches or exceeds threshold.
+
+    Expected behaviour:
+        - Each hit increases the rig's damage counter based on its current upgrade level.
+            Level 0     +1.0 damage
+            Level 1     +0.75 damage
+            Level 2     +0.5 damage
+            Level 3     +0.25 damage
+        - When total damage reaches or exceeds 2.0, the rig becomes broken.
+    """
+
+    print("\n=== TEST: Rig Taking a Hit, Damage Taken Varying with Upgrade Level, and Broken State ===\n")
+
+    # --- Create rig ---
     rig = Rig('Mah Computer')
+
+    # --- Take hit of damage 1 for Level 0 rig ---
     rig.take_hit()
+    print("\n--- This rig should have damage of 1 ---")
     print(rig)
+
+    # --- Take further hit of damage 1, rig is now broken ---
     rig.take_hit()
+    print("\n--- This rig has damage of 2 and is now broken ---")
     print(rig)
+
+    # --- Create a new rig ---
     rig2 = Rig('Mah Better Computer')
+
+    # --- Upgrade rig to level 1 and take hit of damage 0.75 ---
     rig2.upgrade_level = 1
     rig2.take_hit()
+
+    # --- Upgrade rig to level 2 and take hit of damage 0.5 ---
     rig2.upgrade_level = 2
     rig2.take_hit()
+
+    # --- Upgrade rig to level 3 and take hit of damage 0.25 ---
     rig2.upgrade_level = 3
     rig2.take_hit()
+    print("\n--- This rig should have total damage of 0.75 + 0.5 + 0.25 = 1.5 ---")
     print(rig2)
 
-# Tests different condition displays for rig
 def show_condition():
+    """
+    Direct tests for Rig class to display condition based on damage level and broken state.
+
+    Tests:
+        - Displaying rig condition are various damage levels.
+        - Displaying change of upgrade level.
+        - Displaying broken state when applicable.
+
+    Expected behaviour:
+        - Damage = 0 is pristine condition.
+        - Damage > 0 and <1 is slightly damaged.
+        - Damage >= 1 and < 2 is heavily damaged.
+        - Damage >=2 is broken
+        - Broken state = True overrides at any damage level to display as broken state.
+        - Upgrade level is reflected in output messages.
+    """
+    print("\n=== TEST: Show Condition of Rig ===\n")
+
+    # --- Create rig ---
     rig = Rig('Mah Computer')
+
+    # --- Show pristine condition for undamaged rig ---
     print(rig.show_condition())
+
+    # --- Show partially damaged condition for rig with damage < 1 ---
     rig.damage_counter = 0.75
     print(rig.show_condition())
+
+    # --- Show heavily damaged condition for rig with damage >= 1 and < 2 ---
     rig.damage_counter = 1.0
     print(rig.show_condition())
     rig.damage_counter = 1.75
     print(rig.show_condition())
+
+    # --- Show broken condition for rig with damage >= 2 ---
     rig.damage_counter = 2
     print(rig.show_condition())
 
-# Tests creation of a hacker and display of string method
-def create_hacker():
+    # --- Show rig with different upgrade level ---
+    rig.damage_counter = 0
+    rig.upgrade_level = 2
+    print(rig.show_condition())
+
+    # --- Show broken rig will display as broken regardless of damage counter ---
+    rig.is_broken = True
+    print(rig.show_condition())
+
+def create_set_display_hacker():
+    """
+    Direct tests for the Hacker class for hacker creation, setting attributes and string display.
+
+    Tests:
+     - Creation of a hacker instance.
+     - Changing name, rig, trace_level, and is_exposed manually.
+     - Displaying string representations.
+
+     Expected behaviour:
+     - Hacker should be created successfully.
+     - Valid changes should be applied and displayed in string representation.
+     - Invalid changes should not be applied and string representation should be displayed unchanged.
+    """
+    print("\n=== TEST: Create, Modify and Display Hacker ===\n")
+
+    # --- Create and display hacker ---
     hacker = Hacker('Neo')
+    print("--- Newly created hacker ---")
     print(hacker)
+
+    # --- Modify attributes to valid values and display new values ---
+    hacker.name = 123456        # Value will be converted to a string
+    hacker.trace_level = 3      # Valid integer in range 0-5
+    hacker.is_exposed = True    # Valid boolean value
+    hacker.rig = Rig('Old Rig') # Valid Rig object
+    print("--- Hacker with modified attributes ---")
+    print(hacker)
+
+    # --- Attempt to modify attributes to invalid values ---
+    hacker.trace_level = 6      # Out of range 0-5
+    hacker.trace_level = -1     # Out of range 0-5
+    hacker.trace_level = 'abc'  # Not an integer
+    hacker.is_exposed = 'yes'   # Not boolean value
+    hacker.rig = 'New Rig'      # Not a Rig object
+    print("--- Hacker with no invalid changes - same as previous display ---")
+    print(hacker)
+
 
 # Tests adding a valid asset, invalid asset, and non-asset to hacker's inventory
 def add_item_to_inventory():
@@ -240,6 +350,49 @@ def remove_item_from_inventory():
     hacker.remove_asset('Data Spike')
     hacker.remove_asset('USB')
     hacker.remove_asset('CryptoToken')
+    print(hacker)
+
+def scan_add_remove_inventory():
+    """
+        Direct tests for the Hacker class for adding and removing assets from inventory.
+
+        Tests:
+         - Adding assets (valid and invalid) to a hacker's inventory.
+         - Removing assets (valid and invalid) from a hacker's inventory.
+
+         Expected behaviour:
+         - Valid assets should be successfully added and removed from inventory.
+         - Invalid assets should not be added or removed from inventory.
+
+         Notes:
+             - scan_inventory function indirectly tested via its utilisation in remove_asset function.
+             - There are no limits on inventory capacity.
+        """
+    print("\n=== TEST: Search, Add and Remove Assets from Hacker's Inventory ===\n")
+
+    # --- Create hacker ---
+    hacker = Hacker('Neo')
+    print("--- This new hacker should have default inventory of 1x CryptoToken ---")
+    print(hacker)
+
+    # --- Create valid and invalid assets ---
+    valid_asset = Asset('CryptoToken')
+    valid_asset.is_encrypted = True
+    invalid_asset = Asset('USB')        # Not a valid asset name (type)
+    non_asset = 'harddrive'             # Not an Asset object
+
+    # --- Add assets to hacker's inventory and display ---
+    hacker.add_asset(valid_asset)
+    hacker.add_asset(invalid_asset)
+    hacker.add_asset(non_asset)
+    print("\n--- This hacker should now have 2x CryptoTokens (one encrypted) ---")
+    print(hacker)
+
+    # --- Remove assets from hacker's inventory and display ---
+    hacker.remove_asset('CryptoToken')     # Valid asset to be removed
+    hacker.remove_asset('Security Chip')   # Attempt to remove asset not found in inventory
+    hacker.remove_asset('CryptoToken')     # Attempt to remove encrypted asset from inventory
+    print("--- This hacker should now have only one encrypted CryptoToken left in inventory ---")
     print(hacker)
 
 # Tests rig acquisition function for Hacker (exceptions and successful)
@@ -441,18 +594,16 @@ def reduce_trace():
 # Runs testing functions for program
 def main():
     #create_set_display_assets()
+
     #create_set_display_rig()
     #scan_add_remove_storage()
-    generate_asset()
-
+    #generate_asset()
     #take_hit()
     #show_condition()
 
-    #create_hacker()
-    #add_item_to_inventory()
-    #remove_item_from_inventory()
-
-    #acquire_rig()
+    #create_set_display_hacker()
+    #scan_add_remove_inventory()
+    acquire_rig()
     #repair_rig()
     #upgrade_rig()
 

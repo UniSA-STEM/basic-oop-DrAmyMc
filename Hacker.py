@@ -121,12 +121,14 @@ class Hacker:
     # Behavioural methods
     # -------------------
 
-    def scan_inventory(self, asset_name):
+    def scan_inventory(self, asset_name, unsecured):
         """
         Searches the hacker's inventory for an asset by name.
 
         Args:
             asset_name (str): The name of the asset to search for.
+            unsecured (bool): Only search for unencrypted (available) assets if True,
+                                search all assets including encrypted assets is False
 
         Returns:
             int | None: The index of the asset if found, otherwise None.
@@ -134,7 +136,11 @@ class Hacker:
         item_index = None
         for item in self.inventory:
             if item.name == asset_name:
-                item_index = self.inventory.index(item)
+                if unsecured:
+                    if not item.is_encrypted:
+                        item_index = self.inventory.index(item)
+                else:
+                    item_index = self.inventory.index(item)
         return item_index
 
     def add_asset(self, asset):
@@ -149,12 +155,12 @@ class Hacker:
 
     def remove_asset(self, asset_name):
         """
-        Removes an asset from inventory by name, if it exists.
+        Removes an asset from inventory by name, if it exists and is unencrypted.
 
         Args:
             asset_name (str): The name of the asset to remove.
         """
-        index = self.scan_inventory(asset_name)
+        index = self.scan_inventory(asset_name, True)
         if index is not None:
             del self.__inventory[index]
 
@@ -502,8 +508,10 @@ class Hacker:
         else:
             details.append(f"Rig Name: {self.rig.name}")
         details.append(f"Trace Level: {self.trace_level}")
+        if self.is_exposed:
+            details.append("This hacker is exposed!")
         if self.inventory == []:
-            details.append(f"This hacker has no inventory!")
+            details.append("This hacker has no inventory.")
         else:
             details.append(f"Inventory Contents:")
             for item in self.inventory:
