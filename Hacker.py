@@ -375,24 +375,38 @@ class Hacker:
         # Ensures hacker is equipped with a rig before proceeding
         elif self.rig is None:
             print("You cannot store assets - you do not have a rig to store them in.")
-        # Initiates storage of all unencrypted assets if 'all' passed as asset name
-        elif asset_name == 'all':
-            for item in list(self.inventory):
-                if item.is_encrypted == False:
-                    self.rig.add_asset(item)
-                    self.remove_asset(item.name)
-            print("You have transferred all unencrypted assets from inventory to storage.")
-            self.increase_trace(2)
-        # If not all, ensures unencrypted individual asset exists before initiating storage
-        elif self.scan_inventory(asset_name, True) is None:
-            print(f"You do not have an unencrypted {asset_name} in your inventory to store.")
         else:
-            # Stores single asset
-            self.rig.add_asset(Asset(asset_name))
-            self.remove_asset(asset_name)
-            print(f"You have successfully stored a {asset_name}.")
-            # Increases trace
-            self.increase_trace(1)
+            max_storage = [4, 6, 8, 10][self.rig.upgrade_level]
+            space = max_storage - len(self.rig.storage)
+            # Ensures storages is not full before initiating transfer
+            if space == 0:
+                print(f"You cannot store another asset - maximum storage is reached. Upgrade your rig.")
+            else:
+                # Initiates storage of all unencrypted assets if 'all' passed as asset name
+                if asset_name == 'all':
+                    available_assets = [item for item in self.inventory if not item.is_encrypted]
+                    if available_assets is None:
+                        print("There are no unencrypted assets available to store.")
+                    else:
+                        for item in available_assets[0:space]:
+                            self.rig.add_asset(item)
+                            self.remove_asset(item.name)
+                        if len(available_assets) <= space:
+                            print("You have transferred all unencrypted assets from inventory to storage.")
+                        else:
+                            print("You have completed a partial transfer of assets to storage. "
+                                  "Your rig's storage is now full.")
+                        self.increase_trace(2)
+                # If not all, ensures unencrypted individual asset exists before initiating storage
+                elif self.scan_inventory(asset_name, True) is None:
+                    print(f"You do not have an unencrypted {asset_name} in your inventory to store.")
+                else:
+                    # Stores single asset
+                    self.rig.add_asset(Asset(asset_name))
+                    self.remove_asset(asset_name)
+                    print(f"You have successfully stored a {asset_name}.")
+                    # Increases trace
+                    self.increase_trace(1)
 
     def retrieve_asset(self, asset_name):
         """
@@ -432,7 +446,7 @@ class Hacker:
 
     def launch_attack(self, target_rig):
         """
-        Launchs a data spike attack against a target rig.
+        Launches a data spike attack against a target rig.
 
         Requirements:
             - The hacker must not be currently exposed.

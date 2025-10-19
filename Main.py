@@ -11,6 +11,7 @@ from Hacker import Hacker
 from Rig import Rig
 from Asset import Asset
 
+
 def create_set_display_assets():
     """
     Direct tests for the Asset class for asset creation, setting attributes, and string display.
@@ -39,12 +40,12 @@ def create_set_display_assets():
     asset5 = Asset('Hardware Patch')
 
     # --- Attempt to create invalid assets ---
-    asset6 = Asset('USB')   # Invalid name (not in type_list)
-    asset7 = Asset(1)       # Invalid type (not a string)
+    asset6 = Asset('USB')  # Invalid name (not in type_list)
+    asset7 = Asset(1)  # Invalid type (not a string)
 
     # --- Modify asset name ---
-    asset4.name = 'CryptoToken' # Valid name
-    asset4.name = 'USB'         # Invalid name (not in type_list)
+    asset4.name = 'CryptoToken'  # Valid name
+    asset4.name = 'USB'  # Invalid name (not in type_list)
 
     # --- Modify encryption status ---
     asset2.is_encrypted = True
@@ -56,6 +57,7 @@ def create_set_display_assets():
     print(asset3)
     print(asset4)
     print(asset5)
+
 
 def create_set_display_rig():
     """
@@ -70,7 +72,7 @@ def create_set_display_rig():
          - Rig should be created successfully.
          - Valid changes should be applied and displayed in string representation.
          - Invalid changes should not be applied and string representation should be displayed unchanged.
-        """
+    """
     print("\n=== TEST: Create, Modify and Display Rig ===\n")
 
     # --- Create and display rig ---
@@ -79,41 +81,42 @@ def create_set_display_rig():
     print(rig)
 
     # --- Modify attributes to valid values and display new values ---
-    rig.name = 123456           # Value will be converted to a string
-    rig.damage_counter = 1.5    # Valid float in range 0-2
-    rig.is_broken = True        # Valid boolean value
-    rig.upgrade_level = 2       # Valid integer in range 0-3
+    rig.name = 123456  # Value will be converted to a string
+    rig.damage_counter = 1.5  # Valid float in range 0-2
+    rig.is_broken = True  # Valid boolean value
+    rig.upgrade_level = 2  # Valid integer in range 0-3
     print("--- Rig with modified attributes ---")
     print(rig)
 
     # --- Attempt to modify attributes to invalid values ---
-    rig.damage_counter = 5      # Out of range 0-2
-    rig.damage_counter = -1     # Out of range 0-2
+    rig.damage_counter = 5  # Out of range 0-2
+    rig.damage_counter = -1  # Out of range 0-2
     rig.damage_counter = 'abc'  # Not an integer
-    rig.is_broken = 'yes'       # Not boolean value
-    rig.upgrade_level = 5       # Out of range 0-3
-    rig.upgrade_level = -1      # Out of range 0-3
-    rig.upgrade_level = 'abc'   # Not an integer
+    rig.is_broken = 'yes'  # Not boolean value
+    rig.upgrade_level = 5  # Out of range 0-3
+    rig.upgrade_level = -1  # Out of range 0-3
+    rig.upgrade_level = 'abc'  # Not an integer
     print("--- Rig with no invalid changes - same as previous display ---")
     print(rig)
 
+
 def scan_add_remove_storage():
     """
-        Direct tests for the Rig class for adding and removing assets from storage.
+    Direct tests for the Rig class for adding and removing assets from storage.
 
-        Tests:
-         - Adding assets (valid and invalid) to a rig's storage.
-         - Removing assets (valid, invalid, and encrypted) from a rig's storage.
+    Tests:
+     - Adding assets (valid and invalid) to a rig's storage.
+     - Removing assets (valid, invalid, and encrypted) from a rig's storage.
 
-         Expected behaviour:
-         - Valid assets should be successfully added and removed from storage.
-         - Invalid assets should not be added or removed from storage.
-         - Encrypted assets should not be removed from storage.
+     Expected behaviour:
+     - Valid assets should be successfully added and removed from storage.
+     - Invalid assets should not be added or removed from storage.
+     - Encrypted assets should not be removed from storage.
 
-         Notes:
-             - scan_storage function indirectly tested via its utilisation in remove_asset function.
-             - Limits to storage size based on upgrade level will be tested as part of generate_asset function.
-        """
+     Notes:
+         - scan_storage function indirectly tested via its utilisation in remove_asset function.
+         - Limits to storage size based on upgrade level will be tested as part of generate_asset function.
+    """
     print("\n=== TEST: Search, Add and Remove Assets from Rig's Storage ===\n")
 
     # --- Create rig ---
@@ -124,8 +127,8 @@ def scan_add_remove_storage():
     # --- Create valid and invalid assets ---
     valid_asset = Asset('CryptoToken')
     valid_asset.is_encrypted = True
-    invalid_asset = Asset('USB')        # Not a valid asset name (type)
-    non_asset = 'harddrive'             # Not an Asset object
+    invalid_asset = Asset('USB')  # Not a valid asset name (type)
+    non_asset = 'harddrive'  # Not an Asset object
 
     # --- Add assets to rig's storage and display ---
     rig.add_asset(valid_asset)
@@ -135,27 +138,28 @@ def scan_add_remove_storage():
     print(rig)
 
     # --- Remove assets from rig's storage and display ---
-    rig.remove_asset('Data Spike')      # Valid asset to be removed
-    rig.remove_asset('Security Chip')   # Attempt to remove asset not found in storage
-    rig.remove_asset('CryptoToken')     # Attempt to remove encrypted asset from storage
+    rig.remove_asset('Data Spike')  # Valid asset to be removed
+    rig.remove_asset('Security Chip')  # Attempt to remove asset not found in storage
+    rig.remove_asset('CryptoToken')  # Attempt to remove encrypted asset from storage
     print("--- This rig should now have only one Data Spike in storage instead of two ---")
     print(rig)
 
+
 def generate_asset():
     """
-        Direct tests for the Rig class for random asset generation and storage size limits.
+    Direct tests for the Rig class for random asset generation and storage size limits.
 
-        Tests:
-         - Generating random assets and adding them to the rig's storage.
-         - Maximum storage limit for asset varying based on upgrade level of rig.
-         - Attempting to generate an asset while rig is broken.
+    Tests:
+        - Generating random assets and adding them to the rig's storage.
+        - Maximum storage limit for asset varying based on upgrade level of rig.
+        - Attempting to generate an asset while rig is broken.
 
-         Expected behaviour:
-         - Randomly generated assets should be successfully added to the rig's storage if the maximum storage
-            limit is not exceeded.
-         - Maximum storage limit will change from 4 to 6 to 8 to 10 items in line with upgrade levels of 0, 1, 2 and 3.
-         - Error message will display if rig is broken and no asset will be generated.
-        """
+     Expected behaviour:
+        - Randomly generated assets should be successfully added to the rig's storage if the maximum storage
+        limit is not exceeded.
+        - Maximum storage limit will change from 4 to 6 to 8 to 10 items in line with upgrade levels of 0, 1, 2 and 3.
+        - Error message will display if rig is broken and no asset will be generated.
+    """
     print("\n=== TEST: Generate Random Asset and Check Maximum Storage Limits ===\n")
 
     # --- Create rig ---
@@ -169,34 +173,35 @@ def generate_asset():
 
     # --- Test asset generation for Level 0 rig - max items 4 ---
     rig.is_broken = False
-    rig.generate_asset()    # 4th item in storage
-    rig.generate_asset()    # Limit exceeded - will not add
+    rig.generate_asset()  # 4th item in storage
+    rig.generate_asset()  # Limit exceeded - will not add
     print("\n--- This level 0 rig should have 4 items in storage ---")
     print(rig)
 
     # --- Test asset generation for Level 1 rig - max items 6 ---
     rig.upgrade_level = 1
-    rig.generate_asset()    # 5th item in storage
-    rig.generate_asset()    # 6th item in storage
-    rig.generate_asset()    # Limit exceeded - will not add
+    rig.generate_asset()  # 5th item in storage
+    rig.generate_asset()  # 6th item in storage
+    rig.generate_asset()  # Limit exceeded - will not add
     print("\n--- This level 1 rig should have 6 items in storage ---")
     print(rig)
 
     # --- Test asset generation for Level 2 rig - max items 8 ---
     rig.upgrade_level = 2
-    rig.generate_asset()    # 7th item in storage
-    rig.generate_asset()    # 8th item in storage
-    rig.generate_asset()    # Limit exceeded - will not add
+    rig.generate_asset()  # 7th item in storage
+    rig.generate_asset()  # 8th item in storage
+    rig.generate_asset()  # Limit exceeded - will not add
     print("\n--- This level 2 rig should have 8 items in storage ---")
     print(rig)
 
     # --- Test asset generation for Level 3 rig - max items 10 ---
     rig.upgrade_level = 3
-    rig.generate_asset()    # 9th item in storage
-    rig.generate_asset()    # 10th item in storage
-    rig.generate_asset()    # Limit exceeded - will not add
+    rig.generate_asset()  # 9th item in storage
+    rig.generate_asset()  # 10th item in storage
+    rig.generate_asset()  # Limit exceeded - will not add
     print("\n--- This level 3 rig should have 10 items in storage ---")
     print(rig)
+
 
 def take_hit():
     """
@@ -248,6 +253,7 @@ def take_hit():
     print("\n--- This rig should have total damage of 0.75 + 0.5 + 0.25 = 1.5 ---")
     print(rig2)
 
+
 def show_condition():
     """
     Direct tests for Rig class to display condition based on damage level and broken state.
@@ -296,6 +302,7 @@ def show_condition():
     rig.is_broken = True
     print(rig.show_condition())
 
+
 def create_set_display_hacker():
     """
     Direct tests for the Hacker class for hacker creation, setting attributes and string display.
@@ -318,39 +325,40 @@ def create_set_display_hacker():
     print(hacker)
 
     # --- Modify attributes to valid values and display new values ---
-    hacker.name = 123456        # Value will be converted to a string
-    hacker.trace_level = 3      # Valid integer in range 0-5
-    hacker.is_exposed = True    # Valid boolean value
-    hacker.rig = Rig('Old Rig') # Valid Rig object
+    hacker.name = 123456  # Value will be converted to a string
+    hacker.trace_level = 3  # Valid integer in range 0-5
+    hacker.is_exposed = True  # Valid boolean value
+    hacker.rig = Rig('Old Rig')  # Valid Rig object
     print("--- Hacker with modified attributes ---")
     print(hacker)
 
     # --- Attempt to modify attributes to invalid values ---
-    hacker.trace_level = 6      # Out of range 0-5
-    hacker.trace_level = -1     # Out of range 0-5
+    hacker.trace_level = 6  # Out of range 0-5
+    hacker.trace_level = -1  # Out of range 0-5
     hacker.trace_level = 'abc'  # Not an integer
-    hacker.is_exposed = 'yes'   # Not boolean value
-    hacker.rig = 'New Rig'      # Not a Rig object
+    hacker.is_exposed = 'yes'  # Not boolean value
+    hacker.rig = 'New Rig'  # Not a Rig object
     print("--- Hacker with no invalid changes - same as previous display ---")
     print(hacker)
 
+
 def scan_add_remove_inventory():
     """
-        Direct tests for the Hacker class for adding and removing assets from inventory.
+    Direct tests for the Hacker class for adding and removing assets from inventory.
 
-        Tests:
-         - Adding assets (valid and invalid) to a hacker's inventory.
-         - Removing assets (valid, invalid, and encrypted) from a hacker's inventory.
+    Tests:
+        - Adding assets (valid and invalid) to a hacker's inventory.
+        - Removing assets (valid, invalid, and encrypted) from a hacker's inventory.
 
-         Expected behaviour:
-         - Valid assets should be successfully added and removed from inventory.
-         - Invalid assets should not be added or removed from inventory.
-         - Encrypted assets should not be removed from inventory.
+     Expected behaviour:
+        - Valid assets should be successfully added and removed from inventory.
+        - Invalid assets should not be added or removed from inventory.
+        - Encrypted assets should not be removed from inventory.
 
-         Notes:
-             - scan_inventory function indirectly tested via its utilisation in remove_asset function.
-             - There are no limits on inventory capacity.
-        """
+     Notes:
+         - scan_inventory function indirectly tested via its utilisation in remove_asset function.
+         - There are no limits on inventory capacity.
+    """
     print("\n=== TEST: Search, Add and Remove Assets from Hacker's Inventory ===\n")
 
     # --- Create hacker ---
@@ -361,8 +369,8 @@ def scan_add_remove_inventory():
     # --- Create valid and invalid assets ---
     valid_asset = Asset('CryptoToken')
     valid_asset.is_encrypted = True
-    invalid_asset = Asset('USB')        # Not a valid asset name (type)
-    non_asset = 'harddrive'             # Not an Asset object
+    invalid_asset = Asset('USB')  # Not a valid asset name (type)
+    non_asset = 'harddrive'  # Not an Asset object
 
     # --- Add assets to hacker's inventory and display ---
     hacker.add_asset(valid_asset)
@@ -372,11 +380,12 @@ def scan_add_remove_inventory():
     print(hacker)
 
     # --- Remove assets from hacker's inventory and display ---
-    hacker.remove_asset('CryptoToken')     # Valid asset to be removed
-    hacker.remove_asset('Security Chip')   # Attempt to remove asset not found in inventory
-    hacker.remove_asset('CryptoToken')     # Attempt to remove encrypted asset from inventory
+    hacker.remove_asset('CryptoToken')  # Valid asset to be removed
+    hacker.remove_asset('Security Chip')  # Attempt to remove asset not found in inventory
+    hacker.remove_asset('CryptoToken')  # Attempt to remove encrypted asset from inventory
     print("--- This hacker should now have only one encrypted CryptoToken left in inventory ---")
     print(hacker)
+
 
 def acquire_rig():
     """
@@ -418,6 +427,7 @@ def acquire_rig():
 
     # Attempt acquisition when a rig is already present
     hacker.acquire_rig('New Rig')
+
 
 # Tests repair rig function for Hacker (exceptions and successful)
 def repair_rig():
@@ -466,6 +476,7 @@ def repair_rig():
     print(hacker)
     print(hacker.rig)
 
+
 def upgrade_rig():
     """
     Tests rig upgrade for the Hacker class.
@@ -509,6 +520,7 @@ def upgrade_rig():
     hacker.upgrade_rig()
     print(hacker)
     print(hacker.rig)
+
 
 def encrypt_asset():
     """
@@ -578,6 +590,7 @@ def encrypt_asset():
     hacker.encrypt_asset('Removable Drive')
     print(hacker)
     print(hacker.rig)
+
 
 def decrypt_asset():
     """
@@ -652,6 +665,7 @@ def decrypt_asset():
     print(hacker)
     print(hacker.rig)
 
+
 def change_trace():
     """
     Direct tests for increasing and reducing trace and associated exposure for Hacker.
@@ -690,6 +704,7 @@ def change_trace():
     # --- Attempt to reduce trace level below 0 ---
     hacker.reduce_trace()
 
+
 def store_asset():
     """
     Tests for store asset function by Hacker, covering all major conditions and edge cases.
@@ -699,12 +714,14 @@ def store_asset():
         - Attempting to store assets with no rig acquired.
         - Attempting to store unavailable single asset.
         - Attempting to store encrypted single asset.
+        - Attempting to store asset when there is no storage space left
         - Storing available single asset.
         - Storing all available assets.
 
     Expected behaviours:
         - Failed storage attempt if hacker exposed or no rig present.
         - Failed storage attempt it single asset unavailable or encrypted.
+        - Failed storage attempt if no storage space available.
         - Available unencrypted assets are added to storage and removed from inventory.
     """
     print("\n=== TEST: Storage of Assets by Hacker ===\n")
@@ -722,7 +739,7 @@ def store_asset():
 
     # --- Acquire rig and add assets to inventory ---
     hacker.acquire_rig('My Computer')
-    hacker.rig.upgrade_level = 3
+    hacker.rig.upgrade_level = 1
     hacker.add_asset(Asset('CryptoToken'))
     hacker.add_asset(Asset('CryptoToken'))
     hacker.add_asset(Asset('CryptoToken'))
@@ -740,13 +757,30 @@ def store_asset():
     # --- Storage of single assets ---
     hacker.store_asset('CryptoToken')       # Available for transfer
     hacker.store_asset('CryptoToken')       # Available for transfer
-    hacker.store_asset('Security Chip')     # Available for transfer
     hacker.store_asset('Removable Drive')   # Not available in inventory
     hacker.store_asset('Data Spike')        # Encrypted
+    hacker.store_asset('Security Chip')     # Available for transfer
+    hacker.store_asset('CryptoToken')       # Available, but no storage space left
     print(hacker)
     print(hacker.rig)
 
     # --- Storage of all remaining assets ---
+    hacker.trace_level = 0
+    hacker.is_exposed = False
+    hacker.rig.upgrade_level = 2
+    hacker.store_asset('all')
+    print(hacker)
+    print(hacker.rig)
+
+    # --- Storage of more assets for which there is not enough space ---
+    hacker.add_asset(Asset('CryptoToken'))
+    hacker.add_asset(Asset('CryptoToken'))
+    hacker.add_asset(Asset('CryptoToken'))
+    print(hacker)
+    hacker.store_asset('all')
+
+    # --- Storage of more assets for which there is partial space ---
+    hacker.rig.upgrade_level = 3
     hacker.store_asset('all')
     print(hacker)
     print(hacker.rig)
@@ -797,11 +831,11 @@ def retrieve_asset():
     print(hacker.rig)
 
     # --- Retrieval of single assets ---
-    hacker.retrieve_asset('CryptoToken')       # Available for transfer
-    hacker.retrieve_asset('CryptoToken')       # Available for transfer
-    hacker.retrieve_asset('Removable Drive')   # Available for transfer
-    hacker.retrieve_asset('Hardware Patch')    # Not available for transfer
-    hacker.retrieve_asset('Security Chip')     # Encrypted
+    hacker.retrieve_asset('CryptoToken')  # Available for transfer
+    hacker.retrieve_asset('CryptoToken')  # Available for transfer
+    hacker.retrieve_asset('Removable Drive')  # Available for transfer
+    hacker.retrieve_asset('Hardware Patch')  # Not available for transfer
+    hacker.retrieve_asset('Security Chip')  # Encrypted
     print(hacker)
     print(hacker.rig)
 
@@ -809,6 +843,7 @@ def retrieve_asset():
     hacker.retrieve_asset('all')
     print(hacker)
     print(hacker.rig)
+
 
 def launch_attack():
     """
@@ -852,6 +887,7 @@ def launch_attack():
     hacker1.rig.add_asset(asset)
     print(hacker1.rig)
     hacker1.launch_attack(hacker2.rig)
+
 
 def extract_assets():
     """
@@ -912,39 +948,41 @@ def extract_assets():
     print(hacker1)
     print(hacker2.rig)
 
+
 # Runs testing functions for program
 def main():
     """Calls all the test functions"""
 
     # --- Testing asset class ---
-    create_set_display_assets()
+    # create_set_display_assets()
 
     # --- Testing rig class ---
-    create_set_display_rig()
-    scan_add_remove_storage()
-    generate_asset()
-    take_hit()
-    show_condition()
+    # create_set_display_rig()
+    # scan_add_remove_storage()
+    # generate_asset()
+    # take_hit()
+    # show_condition()
 
     # --- Testing hacker class: basics ---
-    create_set_display_hacker()
-    scan_add_remove_inventory()
+    # create_set_display_hacker()
+    # scan_add_remove_inventory()
 
     # --- Testing hacker class: rig functions ---
-    acquire_rig()
-    repair_rig()
-    upgrade_rig()
+    # acquire_rig()
+    # repair_rig()
+    # upgrade_rig()
 
     # --- Testing hacker class: encryption functions ---
-    encrypt_asset()
-    decrypt_asset()
+    # encrypt_asset()
+    # decrypt_asset()
 
     # --- Testing hacker class: risky functions
-    change_trace()
+    # change_trace()
     store_asset()
-    retrieve_asset()
-    launch_attack()
-    extract_assets()
+    # retrieve_asset()
+    # launch_attack()
+    # extract_assets()
+
 
 # Call main function to run tests
 main()
