@@ -103,11 +103,12 @@ def scan_add_remove_storage():
 
         Tests:
          - Adding assets (valid and invalid) to a rig's storage.
-         - Removing assets (valid and invalid) from a rig's storage.
+         - Removing assets (valid, invalid, and encrypted) from a rig's storage.
 
          Expected behaviour:
          - Valid assets should be successfully added and removed from storage.
          - Invalid assets should not be added or removed from storage.
+         - Encrypted assets should not be removed from storage.
 
          Notes:
              - scan_storage function indirectly tested via its utilisation in remove_asset function.
@@ -122,6 +123,7 @@ def scan_add_remove_storage():
 
     # --- Create valid and invalid assets ---
     valid_asset = Asset('CryptoToken')
+    valid_asset.is_encrypted = True
     invalid_asset = Asset('USB')        # Not a valid asset name (type)
     non_asset = 'harddrive'             # Not an Asset object
 
@@ -129,14 +131,14 @@ def scan_add_remove_storage():
     rig.add_asset(valid_asset)
     rig.add_asset(invalid_asset)
     rig.add_asset(non_asset)
-    print("\n--- This rig should have one CryptoToken added to default storage ---")
+    print("\n--- This rig should have one encrypted CryptoToken added to default storage ---")
     print(rig)
 
     # --- Remove assets from rig's storage and display ---
     rig.remove_asset('Data Spike')      # Valid asset to be removed
     rig.remove_asset('Security Chip')   # Attempt to remove asset not found in storage
-    rig.remove_asset('USB')             # Attempt to remove invalid asset not found in storage
-    print("--- This rig should now have only one Data Spike left in storage ---")
+    rig.remove_asset('CryptoToken')     # Attempt to remove encrypted asset from storage
+    print("--- This rig should now have only one Data Spike in storage instead of two ---")
     print(rig)
 
 def generate_asset():
@@ -332,37 +334,18 @@ def create_set_display_hacker():
     print("--- Hacker with no invalid changes - same as previous display ---")
     print(hacker)
 
-
-# Tests adding a valid asset, invalid asset, and non-asset to hacker's inventory
-def add_item_to_inventory():
-    hacker = Hacker('Neo')
-    valid_asset = Asset('CryptoToken')
-    invalid_asset = Asset('USB')
-    non_asset = 'harddrive'
-    hacker.add_asset(valid_asset)
-    hacker.add_asset(invalid_asset)
-    hacker.add_asset(non_asset)
-    print(hacker)
-
-# Tests removing an asset from inventory, and attempting to remove an asset that is not in inventory
-def remove_item_from_inventory():
-    hacker = Hacker('Neo')
-    hacker.remove_asset('Data Spike')
-    hacker.remove_asset('USB')
-    hacker.remove_asset('CryptoToken')
-    print(hacker)
-
 def scan_add_remove_inventory():
     """
         Direct tests for the Hacker class for adding and removing assets from inventory.
 
         Tests:
          - Adding assets (valid and invalid) to a hacker's inventory.
-         - Removing assets (valid and invalid) from a hacker's inventory.
+         - Removing assets (valid, invalid, and encrypted) from a hacker's inventory.
 
          Expected behaviour:
          - Valid assets should be successfully added and removed from inventory.
          - Invalid assets should not be added or removed from inventory.
+         - Encrypted assets should not be removed from inventory.
 
          Notes:
              - scan_inventory function indirectly tested via its utilisation in remove_asset function.
@@ -529,36 +512,54 @@ def upgrade_rig():
 
 # Tests encrypt asset function for Hacker (exceptions and successful)
 def encrypt_asset():
-    # Tests encryption without Security Chip in inventory
+
+    # --- Create hacker ---
     hacker = Hacker('Neo')
+
+    # --- Attempt encryption without rig or Security Chip in inventory ---
     hacker.encrypt_asset('CryptoToken')
-    # Tests encryption without Security Chip in storage or inventory
+
+    # --- Acquire and upgrade rig ---
     hacker.acquire_rig('My Computer')
-    hacker.encrypt_asset('CryptoToken')
-    # Tests encryption of asset type not present in inventory or storage
+    hacker.rig.upgrade_level = 3
+
+    # --- Attempt encryption with no Security Chip in storage or inventory ---
+    hacker.encrypt_asset('Data Spike')
+
+    # --- Attempt encryption with encrypted Security chips in storage and inventory ---
+    asset1 = Asset('Security Chip')
+    asset2 = Asset('Security Chip')
+    asset1.is_encrypted = True
+    asset2.is_encrypted = True
+    hacker.add_asset(asset1)
+    hacker.rig.add_asset(asset2)
+    hacker.encrypt_asset('Data Spike')
+
+    # --- Add assets to inventory and storage for testing and display contents ---
     hacker.add_asset(Asset('Security Chip'))
-    hacker.encrypt_asset('CryptoToken')
-    # Tests successful encryption of asset in inventory with Security Chip in inventory
-    hacker.add_asset(Asset('CryptoToken'))
-    hacker.encrypt_asset('CryptoToken')
-    print(hacker)
-    # Tests successful encryption of asset in inventory with Security Chip in storage
-    hacker.add_asset(Asset('CryptoToken'))
+    hacker.add_asset(Asset('Security Chip'))
     hacker.rig.add_asset(Asset('Security Chip'))
-    hacker.encrypt_asset('CryptoToken')
+    hacker.add_asset(Asset('Removable Drive'))
+    asset3 = Asset('Removable Drive')
+    asset3.is_encrypted = True
+    hacker.rig.add_asset(asset3)
     print(hacker)
-    # Tests successful encryption of asset in storage with Security Chip in inventory
-    hacker.add_asset(Asset('Security Chip'))
-    hacker.encrypt_asset('Data Spike')
     print(hacker.rig)
-    # Tests successful encryption of asset in storage with Security Chip in storage
-    hacker.rig.add_asset(Asset('Security Chip'))
-    hacker.encrypt_asset('Data Spike')
+
+    # --- Successful encryption with target asset from storage and Security Chip from storage ---
+    hacker.encrypt_asset('Removable Drive')
+    print(hacker)
     print(hacker.rig)
-    # Tests encryption of asset when already encrypted
-    hacker.add_asset(Asset('Security Chip'))
-    hacker.encrypt_asset('CryptoToken')
-    hacker.encrypt_asset('Data Spike')
+
+    # --- Successful encryption with target asset from inventory and Security Chip from inventory ---
+    hacker.encrypt_asset('Removable Drive')
+    print(hacker)
+    print(hacker.rig)
+
+    # --- Attempt encryption with no unencrypted target assets available ---
+    hacker.encrypt_asset('Removable Drive')
+    print(hacker)
+    print(hacker.rig)
 
 # Tests decrypt asset function for Hacker (exceptions and successful)
 def decrypt_asset():
@@ -690,9 +691,9 @@ def main():
     #scan_add_remove_inventory()
     #acquire_rig()
     #repair_rig()
-    upgrade_rig()
+    #upgrade_rig()
 
-    #encrypt_asset()
+    encrypt_asset()
     #decrypt_asset()
     #store_asset()
     #retrieve_asset()

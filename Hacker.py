@@ -243,6 +243,21 @@ class Hacker:
                 # Removes 'used' asset from inventory
                 self.remove_asset(required)
 
+    def scan_both(self, asset_name, unsecured):
+        if self.rig is not None:
+            index_storage = self.rig.scan_storage(asset_name, unsecured)
+            in_storage = False if index_storage is None else True
+        else:
+            in_storage = False
+        index_inventory = self.scan_inventory(asset_name, unsecured)
+        in_inventory = False if index_inventory is None else True
+        if not in_storage and not in_inventory:
+            return None
+        elif in_storage:
+            return self.rig.storage[index_storage]
+        else:
+            return self.inventory[index_inventory]
+
     def encrypt_asset(self, asset_name):
         """
         Encrypts an asset in the hacker's inventory or in their rig's storage using a Security Chip.
@@ -251,52 +266,30 @@ class Hacker:
             - The hacker has a Security Chip (unencrypted) available in either inventory or storage.
             - The asset exists and is currently unencrypted in either inventory or storage.
 
-        If all conditions are satisfied, the first matching unencrypted asset found (inventory preferred)
-        will be encrypted and a Security Chip will be consumed (inventory preferred).
+        If all conditions are satisfied, the first matching unencrypted asset found (storage preferred)
+        will be encrypted and a Security Chip will be consumed (storage preferred).
 
         Args:
             asset_name (str): The name (type) of asset to encrypt (e.g. 'Removable Drive').
         """
         required = 'Security Chip'
-        if self.rig is None and self.scan_inventory(required) is None:
-            print(f"You cannot perform this encryption - you need a {required} in your inventory.\n")
-        elif self.rig is not None and self.scan_inventory(required) is None and self.rig.scan_storage(required) == None:
-            print(f"You cannot perform this encryption - you need a {required} in your inventory or storage.\n")
+        # Ensures unecrypted Security Chip is available to use in storage or inventory before proceeding
+        if self.scan_both(required, True) is None:
+            print(f"You cannot perform this encryption - you need an unencrypted {required} in your"
+                  f" storage or inventory.")
         else:
-            if self.rig is None and self.scan_inventory(asset_name) is None:
-                print(f"You cannot encrypt a {asset_name}, as you do not have one in your inventory.\n")
-            elif self.rig is not None and self.scan_inventory(asset_name) is None and self.rig.scan_storage(
-                    asset_name) is None:
-                print(f"You cannot encrypt a {asset_name}, as you do not have one in your inventory or storage.\n")
+            # Ensures an unencrypted target asset exists in storage or inventory before proceeding
+            if self.scan_both(asset_name, True) is None:
+                print(f"You do not have an unencrypted {asset_name} in your storage or inventory to encrypt.")
             else:
-                in_inventory = False
-                index_inventory = None
-                in_storage = False
-                index_storage = None
-                for item in self.inventory:
-                    if item.name == asset_name and item.is_encrypted == False:
-                        index_inventory = self.inventory.index(item)
-                        in_inventory = True
-                for item in self.rig.storage:
-                    if item.name == asset_name and item.is_encrypted == False:
-                        index_storage = self.rig.storage.index(item)
-                        in_storage = True
-                if in_inventory == False and in_storage == False:
-                    print(f"All of your {asset_name}s are already encrypted.\n")
-                elif in_inventory == True:
-                    self.inventory[index_inventory].is_encrypted = True
-                    if self.scan_inventory(required) != None:
-                        self.remove_asset(required)
-                    else:
-                        self.rig.remove_asset(required)
-                    print(f"Your {asset_name} in inventory has now been encrypted.\n")
-                elif in_inventory == False and in_storage == True:
-                    self.rig.storage[index_storage].is_encrypted = True
-                    if self.scan_inventory(required) != None:
-                        self.remove_asset(required)
-                    else:
-                        self.rig.remove_asset(required)
-                    print(f"Your {asset_name} in storage has now been encrypted.\n")
+                # Encrypts the requested asset
+                self.scan_both(asset_name, True).is_encrypted = True
+                print(f"Your {asset_name} has now been encrypted.")
+                # Removes 'used' Security Chip from storage or inventory
+                if self.rig.scan_storage(required, True) is not None:
+                    self.rig.remove_asset(required)
+                else:
+                    self.remove_asset(required)
 
     def decrypt_asset(self, asset_name):
         """

@@ -127,12 +127,14 @@ class Rig:
     # Behavioural methods
     # -------------------
 
-    def scan_storage(self, asset_name):
+    def scan_storage(self, asset_name, unsecured):
         """
         Searches the rig's storage for an asset by name.
 
         Args:
             asset_name (str): The name of the asset to search for.
+            unsecured (bool): Only search for unencrypted (available) assets if True,
+                    search all assets including encrypted assets is False
 
         Returns:
             int | None: The index of the asset if found, otherwise None.
@@ -140,7 +142,11 @@ class Rig:
         item_index = None
         for item in self.storage:
             if item.name == asset_name:
-                item_index = self.storage.index(item)
+                if unsecured:
+                    if not item.is_encrypted:
+                        item_index = self.storage.index(item)
+                else:
+                    item_index = self.storage.index(item)
         return item_index
 
     def add_asset(self, asset):
@@ -165,7 +171,7 @@ class Rig:
         Args:
             asset_name (str): The name of the asset to remove.
         """
-        index = self.scan_storage(asset_name)
+        index = self.scan_storage(asset_name, True)
         if index is not None:
             del self.__storage[index]
 
